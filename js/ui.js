@@ -189,5 +189,5 @@ var menuModel={
 	touch:["setting","ui","action"],
 	dca:["setting","action"],
 	ksa:["setting","action"],
-	about:["about","donatedev","moreext","translate","thanks",/*"help",*/"changelog"]
+	about:["about",/*"donatedev","moreext",*/"translate","thanks",/*"help","changelog"*/]
 }

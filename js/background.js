@@ -1000,7 +1000,7 @@ var appConfmodel = {
     type: "topsites",
     sitegroup: [chrome.i18n.getMessage("homepage_groupdefault")],
     sites: [
-      [{ title: "smartUp Gestures", url: "https://www.baidu.com/s?wd=2" }],
+     [{ title: "GestureUp", url: "https://www.baidu.com/s?wd=2" }],
     ],
     site: [{ title: "Google", url: "https://www.google.com" }],
   },
@@ -4948,7 +4948,7 @@ var sub = {
       config.version = 2.41;
       sub.saveConf(true);
       alert(
-        "Hi,I am so sorry.\nI made a mistake, smartUp's mouse gestures can't work. \nThe mouse gestures actions have been reseted!"
+        "Hi,I am so sorry.\nI made a mistake, GestureUp's mouse gestures can't work. \nThe mouse gestures actions have been reseted!"
       );
     },
     f2_41to2_5: function () {

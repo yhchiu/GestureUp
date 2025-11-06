@@ -3,10 +3,10 @@
     "message": "A customizable web browser extension that enhances productivity and efficiency through the use of mouse."
   },
   "ext_name":{
-    "message":"smartUp Gestures"
+    "message":"GestureUp"
   },
   "ext_desb": {
-    "message": "smartUp aiuta ad usare Firefox in maniera più veloce ed efficiente, attraverso la gestione dei movimenti del mouse e dei link. E' possibile eseguire operazioni come la chiusura di una scheda o di ridurre ad icona o ingrandire la finestra del browser. E' anche possibile eseguire un'altra estensione (con poche modifiche)."
+    "message": "GestureUp aiuta ad usare Firefox in maniera più veloce ed efficiente, attraverso la gestione dei movimenti del mouse e dei link. E' possibile eseguire operazioni come la chiusura di una scheda o di ridurre ad icona o ingrandire la finestra del browser. E' anche possibile eseguire un'altra estensione (con poche modifiche)."
   },
   "ext_ver": {
     "message": "Versione:"
@@ -18,7 +18,7 @@
     "message": "Feedback:"
   },
   "icon_tip":{
-    "message":"smartUp Gestures can't works perfectly in this tab!"
+    "message":"GestureUp can't work perfectly in this tab!"
   },
   "opt_title": {
     "message": "Impostazioni"
@@ -141,7 +141,7 @@
     "message":"Premi [ESC] per cancellare l'operazione corrente"
   },
   "con_background":{
-    "message":"Imposta l'esecuzione di Chrome sempre in background, smartUp funzionerà meglio (richiede autorizzazione 'background')"
+    "message":"Imposta l'esecuzione di Chrome sempre in background, GestureUp funzionerà meglio (richiede autorizzazione 'background')"
   },
   "con_draggable":{
     "message":"Disattiva il trascinamento, quando l'elemento trascinato è impostato come trascinabile [draggable=true]"
@@ -198,7 +198,7 @@
     "message":"E' possibile eliminare qualsiasi autorizzazione in ogni momento, attraverso Impostazioni>Generali>Autorizzazioni"
   },
   "des_lang":{
-    "message": "smartUp imposterà la lingua inglese o quella di sistema."
+    "message": "GestureUp imposterà la lingua inglese o quella di sistema."
   },
   "des_linux": {
     "message": "Questa opzione è valida solo su piattaforma non-Windows. Doppio clic col tasto destro per mostrare il menu contestuale."
@@ -564,7 +564,7 @@
     "message":"Mini APPs"
   },
   "ag_su":{
-    "message":"Informazioni su smartUp"
+    "message":"Informazioni su GestureUp"
   },
   "ag_dep":{
     "message":"Obsoleto"
@@ -699,7 +699,7 @@
     "message": "Visualizza sorgente"
   },
   "reloadext": {
-    "message": "Ricarica smartUp"
+    "message": "Ricarica GestureUp"
   },
   "restart": {
     "message": "Riavvia Chrome"
@@ -744,7 +744,7 @@
     "message":"Decrement Number in URL"
   },
   "extdisable":{
-    "message":"Disable smartUp in current tab temporarily"
+    "message":"Disable GestureUp in current tab temporarily"
   },
   "general": {
     "message": "Generali"
@@ -882,7 +882,7 @@
     "message": "Errore file di configurazione."
   },
   "msg_importver": {
-    "message": "smartUp deve essere aggiornato all'ultima versione prima di importare questa configurazione."
+    "message": "GestureUp deve essere aggiornato all'ultima versione prima di importare questa configurazione."
   },
   "msg_dellast": {
     "message": "E' l'ultima, è necessario mantenerla."
@@ -894,7 +894,7 @@
     "message": "L'autorizzazione è stata eliminata."
   },
   "msg_delpers_fail": {
-    "message": "E' un'autorizzazione di base di smartUp, non può essere eliminata."
+    "message": "E' un'autorizzazione di base di GestureUp, non può essere eliminata."
   },
   "msg_dirnone": {
     "message": "Si prega di tracciare una linea"
@@ -909,7 +909,7 @@
     "message":"Qualcosa è andato storto."
   },
   "msg_first":{
-    "message":"Grazie per aver installato questa estensione.<br \/><li>smartUp è gratuita, vi sarei grado se la valutaste con cinque stelle.<li>If it's the first time to install, it has been working. Try to hold right button to draw up and right?! If you have installed, wait a minute, it is syncing your settings data in background.<li>For some reasons, some actions can not work in this options page.(scroll,script...).<li>Becouse of Chrome's limitations, smartUp cant work in some tabs too.(newtab,setting page...)<li>There are a few actions, you'll add more."
+    "message":"Grazie per aver installato questa estensione.<br \/><li>GestureUp è gratuita, vi sarei grado se la valutaste con cinque stelle.<li>If it's the first time to install, it has been working. Try to hold right button to draw up and right?! If you have installed, wait a minute, it is syncing your settings data in background.<li>For some reasons, some actions can not work in this options page.(scroll,script...).<li>Becouse of Chrome's limitations, GestureUp cant work in some tabs too.(newtab,setting page...)<li>There are a few actions, you'll add more."
   },
   "test_mges": {
     "message": "Disegna la linea qui."
@@ -1032,7 +1032,7 @@
     "message":"Benvenuti"
   },
   "notif_title":{
-    "message":"Notifica smartUp"
+    "message":"Notifica GestureUp"
   },
   "notif_dlok":{
     "message":"Download completed!"
@@ -1317,7 +1317,7 @@
     "message":"Menus of switching features"
   },
   "ctm_disable":{
-    "message":"Disattiva temporaneamente smartUp nella scheda corrente"
+    "message":"Disattiva temporaneamente GestureUp nella scheda corrente"
   },
   "ctm_opt":{
     "message":"Opzioni"
@@ -1352,7 +1352,7 @@
   "review":{
     "message":"Revisione"
   },
-  "perdes_browsersettings":{"message":"Because using mouse gestures on non-Windows platforms conflicts with right-click menus, ensuring a better operating experience, smartUp Gestures needs to request this permission to fix the bug (only Firefox). After getting permission, you need to restart the browser to make it works. For more information: https://developer.mozilla.org/Add-ons/WebExtensions/API/browserSettings. This page only show only one time, or set it again from: General>Linux/Mac Settings>Try to set context menu popup after mouseup."},
+  "perdes_browsersettings":{"message":"Because using mouse gestures on non-Windows platforms conflicts with right-click menus, ensuring a better operating experience, GestureUp Gestures needs to request this permission to fix the bug (only Firefox). After getting permission, you need to restart the browser to make it works. For more information: https://developer.mozilla.org/Add-ons/WebExtensions/API/browserSettings. This page only show only one time, or set it again from: General>Linux/Mac Settings>Try to set context menu popup after mouseup."},
   "opt_mouseup":{"message":"Try to set context menu popup after mouseup"},
   "des_mouseup":{"message":"Fix the conflict between the mouse gesture and the context menu. Only Firefox 58+. Need request permission 'browserSettings'."},
   "touch":{
@@ -1410,7 +1410,7 @@
     "message":"All versions:"
   },
   "extension_updated":{
-    "message":"Estensione SmartUp Aggiornata"
+    "message":"Estensione GestureUp Aggiornata"
   },
   "extension_updated_desc":{
     "message":"Ricarica questa pagina per ripristinare la funzionalità dei gesti"

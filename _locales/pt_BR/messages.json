@@ -50,9 +50,9 @@
    "ag_search": {
       "message": "Procurar"
    },
-   "ag_su": {
-      "message": "Sobre smartUp"
-   },
+  "ag_su": {
+     "message": "Sobre GestureUp"
+  },
    "ag_tab": {
       "message": "Aba"
    },
@@ -302,9 +302,9 @@
    "con_autosync": {
       "message": "Auto sincronizar configuração"
    },
-   "con_background": {
-      "message": "Faça o Chrome sempre funcionar em segundo plano, para que o smartUp funcione melhor. "
-   },
+  "con_background": {
+     "message": "Faça o Chrome sempre funcionar em segundo plano, para que o GestureUp funcione melhor. "
+  },
    "con_bgnote0": {
       "message": "Sua imagem de fundo atual, você pode alterar para a sua própria."
    },
@@ -465,7 +465,7 @@
       "message": "Adicionar os seguintes itens ao menu de contexto:"
    },
    "ctm_disable": {
-      "message": "Desativar smartUp na aba atual temporariamente"
+      "message": "Desativar GestureUp na aba atual temporariamente"
    },
    "ctm_fnswitch": {
       "message": "Menus de troca de recursos"
@@ -489,7 +489,7 @@
       "message": "Ele pode ser ativado ou desativado pelo seguinte caminho: Sobre > Desenvolvimento de suporte."
    },
    "des_black": {
-      "message": "O smartUp deixará de funcionar nas URLs listadas."
+      "message": "O GestureUp deixará de funcionar nas URLs listadas."
    },
    "des_exclusion_match": {
       "message": "O padrão de correspondência permite curingas \"*\"."
@@ -500,12 +500,12 @@
    "des_item": {
       "message": "Clique no item para editar, 'X' para excluir, '+' para adicionar um novo e arraste para classificar."
    },
-   "des_lang": {
-      "message": "O smartUp será exibido em inglês ou no idioma de exibição do Chrome. "
-   },
-   "des_linux": {
-      "message": "Para ter certeza de que o smartUp funciona, clique duas vezes com o botão direito para abrir o menu de contexto para plataformas não Windows ou marque a próxima opção."
-   },
+  "des_lang": {
+     "message": "O GestureUp será exibido em inglês ou no idioma de exibição do Chrome. "
+  },
+  "des_linux": {
+     "message": "Para garantir que o GestureUp funcione, clique duas vezes com o botão direito para abrir o menu de contexto para plataformas não Windows ou marque a próxima opção."
+  },
    "des_moreextlist": {
       "message": "Essas extensões são desenvolvidas por mim. "
    },
@@ -531,7 +531,7 @@
       "message": "Se você não pode conectar o serviço do navegador (Google, Mozilla e assim por diante) facilmente, ou a configuração não pode ser salva e sempre redefinida para a última, você pode tentar desmarcar isso, exportando a configuração para preservar suas configurações."
    },
    "des_white": {
-      "message": "O smartUp funcionará APENAS em URLs listadas."
+      "message": "O GestureUp funcionará APENAS em URLs listadas."
    },
    "detach": {
       "message": "Desanexar aba"
@@ -573,7 +573,7 @@
       "message": "A customizable web browser extension that enhances productivity and efficiency through the use of mouse."
    },
    "ext_desb": {
-      "message": "O smartUp ajudará você a usar o Chrome de maneira inteligente e rápida, os recursos incluem gestos do mouse, arrastar simples, arrastar super e assim por diante.   "
+      "message": "O GestureUp ajudará você a usar o Chrome de maneira inteligente e rápida, os recursos incluem gestos do mouse, arrastar simples, arrastar super e assim por diante.   "
    },
    "ext_email": {
       "message": "Opinião:"
@@ -582,7 +582,7 @@
       "message": "Problemas:"
    },
    "ext_name": {
-      "message": "smartUp Gestures"
+      "message": "GestureUp"
    },
    "ext_site": {
       "message": "Site:"
@@ -590,9 +590,9 @@
    "ext_ver": {
       "message": "Número da versão:"
    },
-   "extdisable": {
-      "message": "Desativar smartUp na aba atual temporariamente"
-   },
+  "extdisable": {
+     "message": "Desativar GestureUp na aba atual temporariamente"
+  },
    "extmgm": {
       "message": "Gerenciamento de extensões"
    },
@@ -740,9 +740,9 @@
    "icon_showname": {
       "message": "Mostrar nome da ação no ícone"
    },
-   "icon_tip": {
-      "message": "smartUp Gestures não podem funcionar perfeitamente nesta aba!"
-   },
+  "icon_tip": {
+     "message": "GestureUp não pode funcionar perfeitamente nesta aba!"
+  },
    "icon_type": {
       "message": "Escolha o tipo de trabalho:"
    },
@@ -899,9 +899,9 @@
    "msg_conferr0": {
       "message": "Falha ao salvar as configurações. "
    },
-   "msg_conferr1": {
-      "message": "SmartUp Gestures tentará reverter para as configurações anteriores."
-   },
+  "msg_conferr1": {
+     "message": "GestureUp tentará reverter para as configurações anteriores."
+  },
    "msg_confimport": {
       "message": "Erro no arquivo de configuração! "
    },
@@ -914,18 +914,18 @@
    "msg_delpers": {
       "message": "A permissão foi excluída."
    },
-   "msg_delpers_fail": {
-      "message": "É uma permissão básica para smartUp, não pode ser excluída."
-   },
+  "msg_delpers_fail": {
+     "message": "É uma permissão básica para GestureUp, não pode ser excluída."
+  },
    "msg_dirnone": {
       "message": "Por favor, desenhando linha!"
    },
    "msg_dirrepeat": {
       "message": "A direção repetiu, tente novamente!"
    },
-   "msg_importver": {
-      "message": "smartUp deve ser atualizado para a versão mais recente antes de importar esta configuração."
-   },
+  "msg_importver": {
+     "message": "GestureUp deve ser atualizado para a versão mais recente antes de importar esta configuração."
+  },
    "msg_reset": {
       "message": "Nota: Esta operação redefinirá todas as configurações e não poderá ser desfeita! "
    },
@@ -1088,9 +1088,9 @@
    "n_snap": {
       "message": "Direção do snap:"
    },
-   "n_suyourls": {
-      "message": "Use o serviço de url curta do smartUp"
-   },
+  "n_suyourls": {
+     "message": "Use o serviço de URL curta do GestureUp"
+  },
    "n_tab": {
       "message": "Aba Alvo:"
    },
@@ -1184,9 +1184,9 @@
    "notif_dlok": {
       "message": "Download concluído!"
    },
-   "notif_title": {
-      "message": "Notificação do smartUp"
-   },
+  "notif_title": {
+     "message": "Notificação do GestureUp"
+  },
    "notif_title_appsave": {
       "message": "Notificação de Mini-apps"
    },
@@ -1227,7 +1227,7 @@
       "message": "Permissões"
    },
    "perdes_browsersettings": {
-      "message": "Como o uso de gestos do mouse em plataformas não Windows entra em conflito com os menus do botão direito, garantindo uma melhor experiência operacional, o smartUp Gestures precisa solicitar essa permissão para corrigir o bug (somente Firefox). "
+      "message": "Como o uso de gestos do mouse em plataformas não Windows entra em conflito com os menus do botão direito, garantindo uma melhor experiência operacional, o GestureUp Gestures precisa solicitar essa permissão para corrigir o bug (somente Firefox). "
    },
    "pin": {
       "message": "Fixar aba"
@@ -1277,9 +1277,9 @@
    "reload": {
       "message": "Recarregar"
    },
-   "reloadext": {
-      "message": "Recarregar smartUp"
-   },
+  "reloadext": {
+     "message": "Recarregar GestureUp"
+  },
    "reopen": {
       "message": "Reabrir aba fechada"
    },
@@ -1892,9 +1892,9 @@
    "zoom_dep": {
          "message": "Zoom"
    },
-   "extension_updated":{
-     "message":"Extensão SmartUp Atualizada"
-   },
+  "extension_updated":{
+    "message":"Extensão GestureUp Atualizada"
+  },
    "extension_updated_desc":{
      "message":"Por favor, recarregue esta página para restaurar a funcionalidade de gestos"
    }

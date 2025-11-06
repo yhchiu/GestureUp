@@ -1,8 +1,6 @@
-![https://img.shields.io/github/issues/yhchiu/smartup](https://user-images.githubusercontent.com/29518677/113705830-7c8fc580-9710-11eb-9b75-f2eddd761590.png)
+# GestureUp 
 
-# smartUp Gestures 
-
-> 🔄 **Manifest V3 Support**: This fork version has been updated to Manifest V3 to comply with modern browser extension standards.
+> Forked from the original [SmartUp Gestures](https://github.com/zimocode/smartup) by zimocode; updated to Manifest V3, with bug fixes and ongoing updates.
 
 A customizable web browser mouse gestures extension with a variety of actions. Features include: mouse gestures, simple drag, super drag, rocker gestures, wheel gestures,Popup Actions, Icon Actions, Context Menu actions, Touch Gestures, Double Click Action and Keyboard Shortcut Actions.
 
@@ -12,7 +10,7 @@ A customizable web browser mouse gestures extension with a variety of actions. F
 
 ### Install by online
 
-smartUP Gestures is not yet available on the browser extension store.
+GestureUp is not yet available on the browser extension store.
 
 ### Install from source
 

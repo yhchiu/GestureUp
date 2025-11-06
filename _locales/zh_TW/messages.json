@@ -3,10 +3,10 @@
     "message": "A customizable web browser extension that enhances productivity and efficiency through the use of mouse."
   },
   "ext_name":{
-    "message":"smartUp手勢"
+    "message":"GestureUp"
   },
   "ext_desb": {
-    "message": "smartUp 讓你的瀏覽器使用上更便利與快速，功能包括滑鼠手勢、簡單拖曳、超級拖曳等。使用它，你將能快速地完成更多瀏覽器的操作，例如「關閉/開啟分頁」、「最小化/最大化視窗」，並且你能同時使用其他的擴充功能唷。(僅需做些變更)。 "
+    "message": "GestureUp 讓你的瀏覽器使用上更便利與快速，功能包括滑鼠手勢、簡單拖曳、超級拖曳等。使用它，你將能快速地完成更多瀏覽器的操作，例如「關閉/開啟分頁」、「最小化/最大化視窗」，並且你能同時使用其他的擴充功能唷。(僅需做些變更)。 "
   },
   "ext_ver": {
     "message": "版本："
@@ -18,7 +18,7 @@
     "message": "反饋："
   },
   "icon_tip":{
-    "message":"smartUp Gestures can't works perfectly in this tab!"
+    "message":"GestureUp can't work perfectly in this tab!"
   },
   "opt_title": {
     "message": "設定"
@@ -141,7 +141,7 @@
     "message":"Press [ESC] to cancel current operation"
   },
   "con_background":{
-    "message":"Make Chrome always work in background , so smartUp will work better. (will request 'background' permission)"
+    "message":"讓 Chrome 持續在背景執行，GestureUp 會運作得更好（會請求 'background' 權限）"
   },
   "con_draggable":{
     "message":"Disable drag, when the dragged element was set as draggable[draggable=true]"
@@ -561,7 +561,7 @@
     "message":"迷你應用程式"
   },
   "ag_su":{
-    "message":"關於 smartUp"
+    "message":"關於 GestureUp"
   },
   "ag_dep":{
     "message":"棄用"
@@ -696,7 +696,7 @@
     "message": "檢視原始碼"
   },
   "reloadext": {
-    "message": "重新載入 smartUp"
+    "message": "重新載入 GestureUp"
   },
   "restart": {
     "message": "重新啟動瀏覽器"
@@ -741,7 +741,7 @@
     "message":"Decrement Number in URL"
   },
   "extdisable":{
-    "message":"Disable smartUp in current tab temporarily"
+    "message":"暫時在目前分頁停用 GestureUp"
   },
   "general": {
     "message": "一般"
@@ -879,7 +879,7 @@
     "message": "設定檔案錯誤！！！"
   },
   "msg_importver": {
-    "message": "smartUp 必須在匯入此設定檔前升級至最新版本。"
+    "message": "GestureUp 必須在匯入此設定檔前升級至最新版本。"
   },
   "msg_dellast": {
     "message": "這是「最後」一個，我們需要保留它。"
@@ -891,7 +891,7 @@
     "message": "此權限已被刪除。"
   },
   "msg_delpers_fail": {
-    "message": "這是 smartUp 的基本權限，無法被刪除。"
+    "message": "這是 GestureUp 的基本權限，無法被刪除。"
   },
   "msg_dirnone": {
     "message": "請畫出手勢！"
@@ -906,7 +906,7 @@
     "message":"發生某些錯誤！！"
   },
   "msg_first":{
-    "message":"感謝你安裝此擴充功能。<br \/><li>smartUp 是免費的擴充功能，如果你能給我5顆星，我會很開心。<li>若這是初次安裝畫面，它已執行中。嘗試按著右鍵以畫出上或右的手勢？！ 若你已安裝，等待1分鐘，它正在背景同步你的設定資料<li>基於某些原因，此選項頁面中某些動作已無法作動。(捲動，腳本...)<li>由於瀏覽器的限制，某些分頁也無法使用 smartUp。(新分頁，設定頁面...)<li>你將可以增加更多動作。"
+    "message":"感謝你安裝此擴充功能。<br \/><li>GestureUp 是免費的擴充功能，如果你能給我5顆星，我會很開心。<li>若這是初次安裝畫面，它已執行中。嘗試按著右鍵以畫出上或右的手勢？！ 若你已安裝，等待1分鐘，它正在背景同步你的設定資料<li>基於某些原因，此選項頁面中某些動作已無法作動。(捲動，腳本...)<li>由於瀏覽器的限制，某些分頁也無法使用 GestureUp。(新分頁，設定頁面...)<li>你將可以增加更多動作。"
   },
   "test_mges": {
     "message": "在這裡畫出手勢。"
@@ -1032,7 +1032,7 @@
     "message":"歡迎"
   },
   "notif_title":{
-    "message":"smartUp 提示"
+    "message":"GestureUp 提示"
   },
   "notif_dlok":{
     "message":"Download completed!"
@@ -1317,7 +1317,7 @@
     "message":"Menus of switching features"
   },
   "ctm_disable":{
-    "message":"Disable smartUp in current tab temporarily"
+    "message":"Disable GestureUp in current tab temporarily"
   },
   "ctm_opt":{
     "message":"Options"
@@ -1352,7 +1352,7 @@
   "review":{
     "message":"評分與評論"
   },
-  "perdes_browsersettings":{"message":"Because using mouse gestures on non-Windows platforms conflicts with right-click menus, ensuring a better operating experience, smartUp Gestures needs to request this permission to fix the bug (only Firefox). After getting permission, you need to restart the browser to make it works. For more information: https://developer.mozilla.org/Add-ons/WebExtensions/API/browserSettings. This page only show only one time, or set it again from: General>Linux/Mac Settings>Try to set context menu popup after mouseup."},
+  "perdes_browsersettings":{"message":"Because using mouse gestures on non-Windows platforms conflicts with right-click menus, ensuring a better operating experience, GestureUp needs to request this permission to fix the bug (only Firefox). After getting permission, you need to restart the browser to make it works. For more information: https://developer.mozilla.org/Add-ons/WebExtensions/API/browserSettings. This page only show only one time, or set it again from: General>Linux/Mac Settings>Try to set context menu popup after mouseup."},
   "opt_mouseup":{"message":"Try to set context menu popup after mouseup"},
   "des_mouseup":{"message":"Fix the conflict between the mouse gesture and the context menu. Only Firefox 58+. Need request permission 'browserSettings'."},
   "touch":{
@@ -1410,7 +1410,7 @@
     "message":"All versions:"
   },
   "extension_updated":{
-    "message":"SmartUp 擴充功能已更新"
+    "message":"GestureUp 擴充功能已更新"
   },
   "extension_updated_desc":{
     "message":"請重新載入此頁面以恢復手勢功能"

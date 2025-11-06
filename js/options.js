@@ -88,7 +88,7 @@ var suo={
     console.error('oninstallAd',oninstallAd);
 		if (oninstallAd) return;
 
-		const dom=(suo.initAPPbox([],[800,230],"SmartUp has been installed successfully, and the following is an advertisement provided by the sponsor.","bg","showlist"));
+		const dom=(suo.initAPPbox([],[800,230],"GestureUp has been installed successfully, and the following is an advertisement provided by the sponsor.","bg","showlist"));
 		const domMain=dom.querySelector(".box_main");
 			domMain.innerText="";
 
@@ -3119,7 +3119,7 @@ var suo={
 			var a=document.createElement("a");
 			a.id="btn_export";
 			a.href=window.URL.createObjectURL(newBlob);
-			a.download="smartup.config";
+			a.download="GestureUp.config";
 			a.textContent=suo.getI18n("con_export");
 			document.querySelector("#export_tip").textContent="";
 			document.querySelector("#export_tip").appendChild(a);

@@ -3,10 +3,10 @@
     "message": "A customizable web browser extension that enhances productivity and efficiency through the use of mouse."
   },
   "ext_name":{
-    "message":"smartUp Gestures"
+    "message":"GestureUp"
   },
   "ext_desb": {
-    "message": "smartUp will help you to use chrome smartly and quickly, features include mouse gestures, simple drag, super drag and so on. With it, you can quickly complete many common operations, such as close tab/new tab, Minimize/Maximize window. And, you can start up another extension too( with few changes ) . "
+    "message": "GestureUp will help you to use chrome smartly and quickly, features include mouse gestures, simple drag, super drag and so on. With it, you can quickly complete many common operations, such as close tab/new tab, Minimize/Maximize window. And, you can start up another extension too( with few changes ) . "
   },
   "ext_ver": {
     "message": "Version No.:"
@@ -18,7 +18,7 @@
     "message": "Feedback:"
   },
   "icon_tip":{
-    "message":"smartUp Gestures can't work perfectly in this tab!"
+    "message":"GestureUp can't work perfectly in this tab!"
   },
   "opt_title": {
     "message": "Settings"
@@ -141,7 +141,7 @@
     "message":"Press [ESC] to cancel current operation"
   },
   "con_background":{
-    "message":"Make Chrome always work in background , so smartUp will work better. (will request 'background' permission)"
+    "message":"Make Chrome always work in background , so GestureUp will work better. (will request 'background' permission)"
   },
   "con_draggable":{
     "message":"Disable drag, when the dragged element was set as draggable[draggable=true]"
@@ -198,10 +198,10 @@
     "message":"You can always delete these requested permissions from Settings>General>Permissions"
   },
   "des_lang":{
-    "message": "smartUp will display in English or chrome's display language. "
+    "message": "GestureUp will display in English or chrome's display language. "
   },
   "des_linux": {
-    "message": "To be sure smartUp works, need to double clicking right button to pop up context menu for non-Windows OS platforms, or, check the next option."
+    "message": "To be sure GestureUp works, need to double clicking right button to pop up context menu for non-Windows OS platforms, or, check the next option."
   },
   "des_sync": {
     "message": "The configuration will be synced with the browser, if you are already logged in to the browser and the browser supports this feature."
@@ -576,7 +576,7 @@
     "message":"Mini APPs"
   },
   "ag_su":{
-    "message":"About smartUp"
+    "message":"About GestureUp"
   },
   "ag_dep":{
     "message":"Deprecated"
@@ -711,7 +711,7 @@
     "message": "View Source"
   },
   "reloadext": {
-    "message": "Reload smartUp"
+    "message": "Reload GestureUp"
   },
   "restart": {
     "message": "Restart Chrome"
@@ -756,7 +756,7 @@
     "message":"Decrement Number in URL"
   },
   "extdisable":{
-    "message":"Disable smartUp in current tab temporarily"
+    "message":"Disable GestureUp in current tab temporarily"
   },
   "general": {
     "message": "General"
@@ -894,7 +894,7 @@
     "message": "Configuration file error! ! !"
   },
   "msg_importver": {
-    "message": "smartUp must be upgraded to the latest version before importing this configuration."
+    "message": "GestureUp must be upgraded to the latest version before importing this configuration."
   },
   "msg_dellast": {
     "message": "It is the LAST one, we need to keep it."
@@ -906,7 +906,7 @@
     "message": "The permission has been deleted."
   },
   "msg_delpers_fail": {
-    "message": "Its a basic permission for smartUp, cant be deleted."
+    "message": "Its a basic permission for GestureUp, cant be deleted."
   },
   "msg_dirnone": {
     "message": "Please drawing line!"
@@ -1041,7 +1041,7 @@
     "message":"Failure to get permissions! \nChrome must be upgraded to latest version."
   },
   "notif_title":{
-    "message":"smartUp Notification"
+    "message":"GestureUp Notification"
   },
   "notif_dlok":{
     "message":"Download completed!"
@@ -1329,7 +1329,7 @@
     "message":"Menus of switching features"
   },
   "ctm_disable":{
-    "message":"Disable smartUp in current tab temporarily"
+    "message":"Disable GestureUp in current tab temporarily"
   },
   "ctm_opt":{
     "message":"Options"
@@ -1392,7 +1392,7 @@
   },
   "place_string":{"message":"Enter Strings"},
   "place_number":{"message":"Enter Number"},
-  "perdes_browsersettings":{"message":"Because using mouse gestures on non-Windows platforms conflicts with right-click menus, ensuring a better operating experience, smartUp Gestures needs to request this permission to fix the bug (only Firefox). After getting permission, you need to restart the browser to make it works. For more information: https://developer.mozilla.org/Add-ons/WebExtensions/API/browserSettings. This page only show only one time, or set it again from: General>Linux/Mac Settings>Try to set context menu popup after mouseup."},
+  "perdes_browsersettings":{"message":"Because using mouse gestures on non-Windows platforms conflicts with right-click menus, ensuring a better operating experience, GestureUp needs to request this permission to fix the bug (only Firefox). After getting permission, you need to restart the browser to make it works. For more information: https://developer.mozilla.org/Add-ons/WebExtensions/API/browserSettings. This page only show only one time, or set it again from: General>Linux/Mac Settings>Try to set context menu popup after mouseup."},
   "opt_mouseup":{"message":"Try to set context menu popup after mouseup"},
   "des_mouseup":{"message":"Fix the conflict between the mouse gesture and the context menu. Only Firefox 58+. Need request permission 'browserSettings'."},
   "touch":{
@@ -1567,7 +1567,7 @@
     "message":"Failed to save settings. The error message is:"
   },
   "msg_conferr1":{
-    "message":"smartUp Gestures will try to roll back to the previous settings."
+    "message":"GestureUp will try to roll back to the previous settings."
   },
   "notif_title_conferr":{
     "message":"Settings save Failed!"
@@ -1738,7 +1738,7 @@
     "message":"Show QR code"
   },
   "n_suyourls":{
-    "message":"Use smartUp short URL service"
+    "message":"Use GestureUp short URL service"
   },
   "app_shorturl_keyholder":{
     "message":"Input keyword, or leave blank to generate automatically."
@@ -1819,10 +1819,10 @@
     "message":"Whitelist mode"
   },
   "des_black":{
-    "message":"smartUp will stop working in listed URLs."
+    "message":"GestureUp will stop working in listed URLs."
   },
   "des_white":{
-    "message":"smartUp will ONLY works in listed URLs."
+    "message":"GestureUp will ONLY works in listed URLs."
   },
   "stnm_exclusion_match":{
     "message":"Manage match URLs"
@@ -1837,7 +1837,7 @@
     "message":"The match URL repeated."
   },
   "extension_updated":{
-    "message":"SmartUp Extension Updated"
+    "message":"GestureUp Extension Updated"
   },
   "extension_updated_desc":{
     "message":"Please reload this page to restore gesture functionality"

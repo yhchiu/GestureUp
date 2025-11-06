@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "minimum_chrome_version": "22",
   "name": "__MSG_ext_name__",
-  "short_name": "smartUp",
+  "short_name": "GestureUp",
   "version": "10.5.0",
   "description": "__MSG_ext_des__",
   "default_locale": "en",
@@ -31,7 +31,7 @@
       "128": "icon.png"
     },
     "default_popup": "html/popup.html",
-    "default_title": "smartUp"
+    "default_title": "GestureUp"
   },
   "options_ui": {
     "open_in_tab": true,
