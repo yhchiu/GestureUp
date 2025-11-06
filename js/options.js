@@ -3162,7 +3162,7 @@ var suo={
 		document.querySelector("#main").style.cssText+="opacity:1;transition:all .9s ease-in-out;display:block;";
 
 		document.querySelector("#abmain_name").innerText=suo.getI18n("ext_name");
-		document.querySelector("#abmain_des").innerText=suo.getI18n("ext_des");
+		document.querySelector("#abmain_des").innerText=suo.getI18n("ext_desb");
 		document.querySelector("#abinfo_ver").innerText+=chrome.runtime.getManifest().version;
 
 
