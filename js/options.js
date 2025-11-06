@@ -3616,6 +3616,7 @@ var suo={
 	},
 	donateBox:{
 		init:function(){
+			return;
 			chrome.runtime.sendMessage({type:"getDonateData"},function(response){
 				console.log(response.value);
 				suo.cons.donateData=response.value;
@@ -3730,6 +3731,7 @@ var suo={
 			document.querySelector(".donate_ccdiv .donate_cccontent[data-id='"+dom.dataset.id+"']").classList.add("donate_contentcurrent");
 		},
 		switch:function(dom){
+			return;
 			let lists=document.querySelectorAll("#donate_main #donate_list li"),
 				contents=document.querySelectorAll("#donate_main #donate_content .donate_contentlist");
 
@@ -3749,9 +3751,11 @@ var suo={
 			document.querySelector(".donate_contentlist[data-id='"+dom.dataset.id+"']").classList.add("donate_contentcurrent");
 		},
 		show:function(){
+			return;
 			document.querySelector("#menu_donate").style.cssText+="display:block;";
 		},
 		showDonate:function(){
+			return;
 			document.querySelector("#donate_box").style.cssText+="display:block;";
 			document.querySelector("#donate_loading").style.cssText+="display:none;";
 			// domMain.style.cssText+="display:block;";
