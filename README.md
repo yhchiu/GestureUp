@@ -4,13 +4,17 @@
 
 A customizable web browser mouse gestures extension with a variety of actions. Features include: mouse gestures, simple drag, super drag, rocker gestures, wheel gestures,Popup Actions, Icon Actions, Context Menu actions, Touch Gestures, Double Click Action and Keyboard Shortcut Actions.
 
-[English](README.md) ·[简体中文](README-zh_CN.md)
+[Available in the Chrome Web Store](https://chromewebstore.google.com/detail/gestureup/cfmbhdicpeegdoedibhmmlbhonjelamb)
 
 ## Install
 
-### Install by online
+### Install from Chrome Web Store (Recommended)
 
-GestureUp is not yet available on the browser extension store.
+Install directly from the Chrome Web Store: [GestureUp](https://chromewebstore.google.com/detail/gestureup/cfmbhdicpeegdoedibhmmlbhonjelamb)
+
+1. Visit the Chrome Web Store link above
+2. Click "Add to Chrome" button
+3. Confirm the installation when prompted
 
 ### Install from source
 
