@@ -6,6 +6,23 @@ A customizable web browser mouse gestures extension with a variety of actions. F
 
 [Available in the Chrome Web Store](https://chromewebstore.google.com/detail/gestureup/cfmbhdicpeegdoedibhmmlbhonjelamb)
 
+## Screenshots
+
+### Mouse Gestures
+![Extension Popup](screenshots/01-Gestures.png)
+
+### Edit Mouse Actions
+![Suspended Page](screenshots/02-MouseActions.png)
+
+### Edit Text Actions
+![Whitelist Management](screenshots/03-TextActions.png)
+
+### Settings
+![Tab Migration](screenshots/04-Settings.png)
+
+### Features
+![Session Management](screenshots/05-Features.png)
+
 ## Install
 
 ### Install from Chrome Web Store (Recommended)
