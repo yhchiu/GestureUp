@@ -876,6 +876,21 @@ let loadLocalConfig = function () {
 // service workers are torn down when idle and restarted on the next event, so
 // message handlers must await this instead of racing the async load below
 // (which is what made the first simple-drag after an idle period do nothing).
+// Best-effort cache of the loaded config in chrome.storage.session (Chrome
+// 102+), which survives service-worker restarts but is cleared when the browser
+// closes. Reading it back is far faster than the chained sync/local round-trips,
+// which shrinks the cold-start window after the worker is revived.
+function cacheConfigToSession() {
+  if (chrome.storage && chrome.storage.session && config) {
+    try {
+      chrome.storage.session.set({ config: config }, function () {
+        void chrome.runtime.lastError; // ignore if session storage is unavailable
+      });
+    } catch (e) {
+      /* storage.session not available on this browser */
+    }
+  }
+}
 let configReady;
 let loadConfig = function (noInit, type) {
   let _resolve;
@@ -885,6 +900,7 @@ let loadConfig = function (noInit, type) {
   function needInit() {
     //if(!config.version){config.version=37;}
     sub.init();
+    cacheConfigToSession();
     if (_resolve) {
       _resolve();
     }
@@ -933,6 +949,7 @@ let loadConfig = function (noInit, type) {
     });
   }
   
+  function loadFromStorage() {
   if (!type) {
     if (chrome.storage.sync) {
       chrome.storage.sync.get(["sync"], function (result) {
@@ -963,6 +980,35 @@ let loadConfig = function (noInit, type) {
     } else {
       loadLocalStorage();
     }
+  }
+  }
+
+  // Fast path: when the worker has just restarted (config not in memory yet),
+  // resolve from the session cache instead of the slower sync/local reads. On a
+  // miss, an older browser, or when config is already loaded (e.g. a
+  // save-triggered reload), fall back to the authoritative load. init() runs
+  // exactly once, via needInit() on whichever path wins.
+  if (!type && chrome.storage && chrome.storage.session) {
+    try {
+      chrome.storage.session.get("config", function (s) {
+        if (
+          !chrome.runtime.lastError &&
+          (!config || !config.general) &&
+          s &&
+          s.config &&
+          s.config.general
+        ) {
+          config = s.config;
+          needInit();
+        } else {
+          loadFromStorage();
+        }
+      });
+    } catch (e) {
+      loadFromStorage();
+    }
+  } else {
+    loadFromStorage();
   }
   return configReady;
 };
@@ -6769,6 +6815,20 @@ chrome.runtime.onConnect.addListener(function (port) {
       break;
   }
 });
+// Drop the session fast-path cache whenever the authoritative config store
+// changes (our own saves, or a sync from another device) so the next
+// service-worker start re-reads the fresh config instead of a stale cache.
+if (chrome.storage && chrome.storage.onChanged) {
+  chrome.storage.onChanged.addListener(function (changes, area) {
+    if ((area === "sync" || area === "local") && chrome.storage.session) {
+      try {
+        chrome.storage.session.remove("config");
+      } catch (e) {
+        /* storage.session not available on this browser */
+      }
+    }
+  });
+}
 loadConfig();
 //browsersettings
 if (chrome.browserSettings && chrome.browserSettings.contextMenuShowEvent) {
