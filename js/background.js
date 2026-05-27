@@ -872,10 +872,22 @@ let loadLocalConfig = function () {
     localConfig = items.local;
   });
 };
+// Promise that resolves once `config` has been populated from storage. MV3
+// service workers are torn down when idle and restarted on the next event, so
+// message handlers must await this instead of racing the async load below
+// (which is what made the first simple-drag after an idle period do nothing).
+let configReady;
 let loadConfig = function (noInit, type) {
+  let _resolve;
+  configReady = new Promise(function (r) {
+    _resolve = r;
+  });
   function needInit() {
     //if(!config.version){config.version=37;}
     sub.init();
+    if (_resolve) {
+      _resolve();
+    }
     return;
     if (noInit) {
     } else {
@@ -952,6 +964,7 @@ let loadConfig = function (noInit, type) {
       loadLocalStorage();
     }
   }
+  return configReady;
 };
 
 var appConfmodel = {
@@ -6718,11 +6731,20 @@ chrome.runtime.onMessageExternal.addListener(function (
   sender,
   sendResponse
 ) {
-  sub.funOnMessage(message, sender, sendResponse);
+  // Wait for config before handling, so a message that wakes the service
+  // worker doesn't race the async config load (see configReady above).
+  (configReady || loadConfig()).then(function () {
+    sub.funOnMessage(message, sender, sendResponse);
+  });
+  return true; // keep the channel open for the now-async sendResponse
 });
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-  sub.funOnMessage(message, sender, sendResponse);
-  // return true;
+  // Wait for config before handling, so a message that wakes the service
+  // worker doesn't race the async config load (see configReady above).
+  (configReady || loadConfig()).then(function () {
+    sub.funOnMessage(message, sender, sendResponse);
+  });
+  return true; // keep the channel open for the now-async sendResponse
 });
 chrome.runtime.onConnect.addListener(function (port) {
   switch (port.name) {
