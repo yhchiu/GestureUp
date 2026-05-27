@@ -1518,25 +1518,46 @@ var sue={
 			return;
 		}
 		
+		// Capture the payload once so a retry re-sends exactly the same request
+		// even if the user starts another gesture/drag in the meantime.
+		var payload = {type:dirType,direct:dir,drawType:sue.drawType,selEle:sue.selEle};
+
+		var attempt = function(retriesLeft){
 		try {
-		chrome.runtime.sendMessage(extID,{type:dirType,direct:dir,drawType:sue.drawType,selEle:sue.selEle},function(response){
+		chrome.runtime.sendMessage(extID,payload,function(response){
 				// Check for runtime errors
 				if (chrome.runtime.lastError) {
+					var errMsg = chrome.runtime.lastError.message || "";
 					// Extension context has been invalidated, mark it and show notification
-					if (chrome.runtime.lastError.message.includes("Extension context invalidated")) {
+					if (errMsg.includes("Extension context invalidated")) {
 						if (extensionContextValid) {
 							extensionContextValid = false;
 							showExtensionContextNotification();
 						}
 						return;
 					}
-					console.warn("[GestureUp] Runtime error in sendDir:", chrome.runtime.lastError.message);
+					// The service worker may still have been waking up. Retry once for the
+					// idempotent tip, or for an action only when the request provably never
+					// reached a handler, so an action can never be executed twice.
+					var notDelivered = errMsg.includes("Receiving end does not exist") || errMsg.includes("Could not establish connection");
+					if (retriesLeft > 0 && (dirType === "gettip" || notDelivered)) {
+						setTimeout(function(){ attempt(retriesLeft - 1); }, 150);
+						return;
+					}
+					console.warn("[GestureUp] Runtime error in sendDir:", errMsg);
 					return;
 				}
 				
   			returnValue=response;
   			sue.getedConf=returnValue;
-  			if(!response){return false;}
+  			if(!response){
+  				// No error but no reply: the tip is safe to re-request; never retry an
+  				// action this way, since it may already have executed.
+  				if (retriesLeft > 0 && dirType === "gettip") {
+  					setTimeout(function(){ attempt(retriesLeft - 1); }, 150);
+  				}
+  				return false;
+  			}
   			switch(response.type){
   				case"tip":
   					sue.ui_tip(response,e);
@@ -1555,6 +1576,9 @@ var sue={
 				showExtensionContextNotification();
 			}
 		}
+		};
+
+		attempt(1);
 	}
 }
 chrome.runtime.onMessage.addListener(function(message,sender,sendResponse) {
