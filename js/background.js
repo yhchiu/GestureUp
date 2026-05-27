@@ -5279,10 +5279,16 @@ var sub = {
     sub.message = message;
     let getConf = function () {
       let drawType = message.drawType,
-        confType = config[drawType[0]][drawType[1]],
+        root = config && drawType && config[drawType[0]],
+        confType = root && root[drawType[1]],
         direct = message.direct,
         theName = "",
         theConf = "";
+      // Guard against config not being loaded yet or an unknown drawType, so the
+      // handler never throws (which previously dropped the drag action entirely).
+      if (!confType || !confType.length) {
+        return { name: null };
+      }
       for (var i = 0; i < confType.length; i++) {
         if (confType[i].direct == direct) {
           theName = confType[i].name;
