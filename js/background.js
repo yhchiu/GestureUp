@@ -3407,7 +3407,7 @@ var sub = {
         for (var i = 0; i < ids.length; i++) {
           chrome.tabs.get(ids[i], function (tab) {
             chrome.pageCapture.saveAsMHTML({ tabId: tab.id }, function (data) {
-              var url = window.URL.createObjectURL(data);
+              var url = URL.createObjectURL(data);
               chrome.downloads.setShelfEnabled(_dlbar);
               chrome.downloads.download(
                 { url: url, filename: tab.title + ".mhtml" },
@@ -5584,7 +5584,7 @@ var sub = {
         sub.theConf = config.wges.actions[_id];
         if (sub.theConf.name == "scroll") {
           //fix action scrollame});
-          window.setTimeout(function () {
+          setTimeout(function () {
             sub.initCurrent(sender, sub.theConf);
           }, 200);
           return;
@@ -5595,7 +5595,7 @@ var sub = {
         sub.theConf = config.dca.actions[0];
         if (sub.theConf.name == "scroll") {
           //fix action scrollame});
-          window.setTimeout(function () {
+          setTimeout(function () {
             sub.initCurrent(sender, sub.theConf);
           }, 200);
           return;
@@ -5866,7 +5866,7 @@ var sub = {
               text: sub.cons.autoreload[sender.tab.id].timeRemain.toString(),
               tabId: sender.tab.id,
             });
-            sub.cons.autoreload[sender.tab.id].countDown = window.setInterval(
+            sub.cons.autoreload[sender.tab.id].countDown = setInterval(
               function () {
                 sub.cons.autoreload[sender.tab.id].timeRemain--;
                 chrome.action.setBadgeText({
@@ -5879,14 +5879,14 @@ var sub = {
               1000
             );
           } else {
-            sub.cons.autoreload[sender.tab.id].countDown = window.setInterval(
+            sub.cons.autoreload[sender.tab.id].countDown = setInterval(
               function () {
                 sub.cons.autoreload[sender.tab.id].timeRemain--;
               },
               1000
             );
           }
-          sub.cons.autoreload[sender.tab.id].timer = window.setInterval(
+          sub.cons.autoreload[sender.tab.id].timer = setInterval(
             function () {
               chrome.tabs.reload(sender.tab.id, {
                 bypassCache: sub.cons.autoreload[sender.tab.id].bypassCache,
@@ -5902,8 +5902,8 @@ var sub = {
       },
       clear: function (message, sender, sendResponse) {
         if (sub.cons.autoreload && sub.cons.autoreload[sender.tab.id]) {
-          window.clearInterval(sub.cons.autoreload[sender.tab.id].timer);
-          window.clearInterval(sub.cons.autoreload[sender.tab.id].countDown);
+          clearInterval(sub.cons.autoreload[sender.tab.id].timer);
+          clearInterval(sub.cons.autoreload[sender.tab.id].countDown);
           sub.cons.autoreload[sender.tab.id].timeRemain = 0;
         }
         chrome.action.setBadgeText({ text: "", tabId: sender.tab.id });
@@ -6773,8 +6773,8 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 });
 chrome.tabs.onRemoved.addListener(function (tabId) {
   if (sub.cons.autoreload && sub.cons.autoreload[tabId]) {
-    window.clearInterval(sub.cons.autoreload[tabId].timer);
-    window.clearInterval(sub.cons.autoreload[tabId].countDown);
+    clearInterval(sub.cons.autoreload[tabId].timer);
+    clearInterval(sub.cons.autoreload[tabId].countDown);
   }
   //(sub.cons.autoreload&&sub.cons.autoreload[tabId])?window.clearInterval(sub.cons.autoreload[tabId]):null;
 });
