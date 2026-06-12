@@ -32,6 +32,37 @@ Array.prototype.containsAll = function (ele) {
 var devMode = false;
 var config, defaultConf, _SYNC, browserType, timerSaveConf;
 let localConfig;
+// Copies `text` to the clipboard from within the page using the execCommand
+// fallback, WITHOUT cancelling the user's current text highlight. Injected via
+// chrome.scripting.executeScript, so it must stay fully self-contained (it runs
+// in the page context and cannot reference anything from the service worker).
+function copyTextPreservingSelection(text) {
+  var sel = window.getSelection();
+  var saved = [];
+  for (var i = 0; i < sel.rangeCount; i++) {
+    saved.push(sel.getRangeAt(i).cloneRange());
+  }
+  var clipOBJ = document.createElement("textarea");
+  clipOBJ.value = text;
+  clipOBJ.setAttribute("readonly", "");
+  // Keep it off-screen so appending and selecting never scrolls or flashes.
+  clipOBJ.style.cssText = "position:fixed;top:-9999px;left:-9999px;opacity:0;";
+  document.body.appendChild(clipOBJ);
+  clipOBJ.select();
+  try {
+    document.execCommand("copy");
+  } finally {
+    clipOBJ.remove();
+    // Restore exactly the selection the user had before we hijacked it.
+    if (saved.length) {
+      sel.removeAllRanges();
+      for (var j = 0; j < saved.length; j++) {
+        sel.addRange(saved[j]);
+      }
+    }
+  }
+}
+
 
 //check browser
 if (navigator.userAgent.toLowerCase().indexOf("firefox") != -1) {
@@ -2364,13 +2395,7 @@ var sub = {
                   if (tabs[0]) {
                     chrome.scripting.executeScript({
                       target: {tabId: tabs[0].id},
-                      func: (text) => {
-                        const clipOBJ = document.body.appendChild(document.createElement("textarea"));
-                        clipOBJ.value = text;
-                        clipOBJ.select();
-                        document.execCommand("copy");
-                        clipOBJ.remove();
-                      },
+                      func: copyTextPreservingSelection,
                       args: [textToCopy]
                     });
                   }
@@ -2382,13 +2407,7 @@ var sub = {
                 if (tabs[0]) {
                   chrome.scripting.executeScript({
                     target: {tabId: tabs[0].id},
-                    func: (text) => {
-                      const clipOBJ = document.body.appendChild(document.createElement("textarea"));
-                      clipOBJ.value = text;
-                      clipOBJ.select();
-                      document.execCommand("copy");
-                      clipOBJ.remove();
-                    },
+                    func: copyTextPreservingSelection,
                     args: [textToCopy]
                   });
                 }
@@ -2558,13 +2577,7 @@ var sub = {
               if (tabs[0]) {
                 chrome.scripting.executeScript({
                   target: {tabId: tabs[0].id},
-                  func: (text) => {
-                    const clipOBJ = document.body.appendChild(document.createElement("textarea"));
-                    clipOBJ.value = text;
-                    clipOBJ.select();
-                    document.execCommand("copy");
-                    clipOBJ.remove();
-                  },
+                  func: copyTextPreservingSelection,
                   args: [sub.message.selEle.txt]
                 });
               }
@@ -2576,13 +2589,7 @@ var sub = {
             if (tabs[0]) {
               chrome.scripting.executeScript({
                 target: {tabId: tabs[0].id},
-                func: (text) => {
-                  const clipOBJ = document.body.appendChild(document.createElement("textarea"));
-                  clipOBJ.value = text;
-                  clipOBJ.select();
-                  document.execCommand("copy");
-                  clipOBJ.remove();
-                },
+                func: copyTextPreservingSelection,
                 args: [sub.message.selEle.txt]
               });
             }
@@ -2876,13 +2883,7 @@ var sub = {
               if (tabs[0]) {
                 chrome.scripting.executeScript({
                   target: {tabId: tabs[0].id},
-                  func: (url) => {
-                    const clipOBJ = document.body.appendChild(document.createElement("textarea"));
-                    clipOBJ.value = url;
-                    clipOBJ.select();
-                    document.execCommand("copy");
-                    clipOBJ.remove();
-                  },
+                  func: copyTextPreservingSelection,
                   args: [sub.message.selEle.lnk]
                 });
               }
@@ -2894,13 +2895,7 @@ var sub = {
             if (tabs[0]) {
               chrome.scripting.executeScript({
                 target: {tabId: tabs[0].id},
-                func: (url) => {
-                  const clipOBJ = document.body.appendChild(document.createElement("textarea"));
-                  clipOBJ.value = url;
-                  clipOBJ.select();
-                  document.execCommand("copy");
-                  clipOBJ.remove();
-                },
+                func: copyTextPreservingSelection,
                 args: [sub.message.selEle.lnk]
               });
             }
@@ -2925,13 +2920,7 @@ var sub = {
               if (tabs[0]) {
                 chrome.scripting.executeScript({
                   target: {tabId: tabs[0].id},
-                  func: (text) => {
-                    const clipOBJ = document.body.appendChild(document.createElement("textarea"));
-                    clipOBJ.value = text;
-                    clipOBJ.select();
-                    document.execCommand("copy");
-                    clipOBJ.remove();
-                  },
+                  func: copyTextPreservingSelection,
                   args: [sub.message.selEle.str]
                 });
               }
@@ -2943,13 +2932,7 @@ var sub = {
             if (tabs[0]) {
               chrome.scripting.executeScript({
                 target: {tabId: tabs[0].id},
-                func: (text) => {
-                  const clipOBJ = document.body.appendChild(document.createElement("textarea"));
-                  clipOBJ.value = text;
-                  clipOBJ.select();
-                  document.execCommand("copy");
-                  clipOBJ.remove();
-                },
+                func: copyTextPreservingSelection,
                 args: [sub.message.selEle.str]
               });
             }
@@ -2975,13 +2958,7 @@ var sub = {
               if (tabs[0]) {
                 chrome.scripting.executeScript({
                   target: {tabId: tabs[0].id},
-                  func: (html) => {
-                    const clipOBJ = document.body.appendChild(document.createElement("textarea"));
-                    clipOBJ.value = html;
-                    clipOBJ.select();
-                    document.execCommand("copy");
-                    clipOBJ.remove();
-                  },
+                  func: copyTextPreservingSelection,
                   args: [linkHtml]
                 });
               }
@@ -2993,13 +2970,7 @@ var sub = {
             if (tabs[0]) {
               chrome.scripting.executeScript({
                 target: {tabId: tabs[0].id},
-                func: (html) => {
-                  const clipOBJ = document.body.appendChild(document.createElement("textarea"));
-                  clipOBJ.value = html;
-                  clipOBJ.select();
-                  document.execCommand("copy");
-                  clipOBJ.remove();
-                },
+                func: copyTextPreservingSelection,
                 args: [linkHtml]
               });
             }
@@ -3109,13 +3080,7 @@ var sub = {
               if (tabs[0]) {
                 chrome.scripting.executeScript({
                   target: {tabId: tabs[0].id},
-                  func: (imageUrl) => {
-                    const clipOBJ = document.body.appendChild(document.createElement("textarea"));
-                    clipOBJ.value = imageUrl;
-                    clipOBJ.select();
-                    document.execCommand("copy");
-                    clipOBJ.remove();
-                  },
+                  func: copyTextPreservingSelection,
                   args: [sub.message.selEle.img]
                 });
               }
@@ -3127,13 +3092,7 @@ var sub = {
             if (tabs[0]) {
               chrome.scripting.executeScript({
                 target: {tabId: tabs[0].id},
-                func: (imageUrl) => {
-                  const clipOBJ = document.body.appendChild(document.createElement("textarea"));
-                  clipOBJ.value = imageUrl;
-                  clipOBJ.select();
-                  document.execCommand("copy");
-                  clipOBJ.remove();
-                },
+                func: copyTextPreservingSelection,
                 args: [sub.message.selEle.img]
               });
             }
