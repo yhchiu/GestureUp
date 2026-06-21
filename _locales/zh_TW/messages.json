@@ -1409,6 +1409,51 @@
   "ext_allver":{
     "message":"All versions:"
   },
+  "exclusion":{
+    "message":"排除清單"
+  },
+  "stnm_exclusiontype":{
+    "message":"排除類型"
+  },
+  "exclusion_enable":{
+    "message":"啟用排除功能"
+  },
+  "exclusion_black":{
+    "message":"黑名單模式"
+  },
+  "exclusion_white":{
+    "message":"白名單模式"
+  },
+  "des_black":{
+    "message":"GestureUp 不會在符合的網址中運作。"
+  },
+  "des_white":{
+    "message":"GestureUp 只會在符合的網址中運作。"
+  },
+  "stnm_exclusion_match":{
+    "message":"管理符合網址"
+  },
+  "des_exclusion_match":{
+    "message":"輸入網域或 URL pattern。網域會符合所有路徑；可使用 * 作為萬用字元。儲存後，已開啟分頁會重新檢查規則。"
+  },
+  "des_exclusion_examples":{
+    "message":"範例：example.com、*.example.com、example.com/app/*、https://example.com/app?mode=*"
+  },
+  "des_exclusion_apply":{
+    "message":"iframe 會以最上層頁面的 URL 判斷，因此被列入黑名單的網頁工具也會停用內嵌 frame 裡的 GestureUp。"
+  },
+  "placeholder_exclusion_match":{
+    "message":"example.com 或 *.example.com"
+  },
+  "title_exclusion_match":{
+    "message":"網域會符合所有路徑；完整 URL 可包含 path、query、hash 與 * 萬用字元。"
+  },
+  "btn_add":{
+    "message":"新增"
+  },
+  "tip_exclusion_repeat":{
+    "message":"符合網址重複。"
+  },
   "extension_updated":{
     "message":"GestureUp 擴充功能已更新"
   },

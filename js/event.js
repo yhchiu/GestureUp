@@ -19,7 +19,8 @@ var configLoadState = {
 	retryCount: 0,
 	maxRetries: 3,
 	retryDelay: 1000,
-	isInitialized: false
+	isInitialized: false,
+	reloadTimer: null
 };
 	
 
@@ -147,7 +148,9 @@ function tryFallbackConfig() {
 			},
 			exclusion: {
 				exclusion: false,
-				exclusiontype: "black"
+				exclusiontype: "black",
+				black: [],
+				white: []
 			},
 			linux: {
 				cancelmenu: false
@@ -230,6 +233,91 @@ function backupConfigToLocal() {
 			console.warn("[GestureUp] Failed to backup config to localStorage:", e);
 		}
 	}
+}
+
+function scheduleConfigReload() {
+	if (!configLoadState.isInitialized || !extensionContextValid) {
+		return;
+	}
+	window.clearTimeout(configLoadState.reloadTimer);
+	configLoadState.reloadTimer = window.setTimeout(function() {
+		configLoadState.isLoading = false;
+		loadConfigWithRetry();
+	}, 150);
+}
+
+function getTopLevelExclusionURL() {
+	try {
+		if (window.top && window.top.location && window.top.location.href) {
+			return window.top.location.href;
+		}
+	} catch (e) {}
+	try {
+		if (document.location.ancestorOrigins && document.location.ancestorOrigins.length) {
+			return document.location.ancestorOrigins[document.location.ancestorOrigins.length - 1];
+		}
+	} catch (e) {}
+	return window.location.href;
+}
+
+function escapeExclusionRegex(pattern) {
+	return pattern.replace(/[.+?^${}()|[\]\\]/g, "\\$&").replace(/\*/g, ".*");
+}
+
+function getExclusionTargets(rawURL, pattern) {
+	var hasScheme = /^[a-z][a-z0-9+.-]*:\/\//i.test(pattern);
+	var comparePattern = hasScheme ? pattern.replace(/^[a-z][a-z0-9+.-]*:\/\//i, "") : pattern;
+	var hostOnly = comparePattern.indexOf("/") === -1 && comparePattern.indexOf("?") === -1 && comparePattern.indexOf("#") === -1;
+	var includeQuery = pattern.indexOf("?") !== -1 || pattern.indexOf("#") !== -1;
+	var url;
+	try {
+		url = new URL(rawURL);
+	} catch (e) {
+		try {
+			url = new URL("https://" + rawURL);
+		} catch (err) {
+			return [rawURL];
+		}
+	}
+	var path = url.pathname || "/";
+	var pathNoSlash = path.length > 1 ? path.replace(/\/+$/, "") : path;
+	if (hasScheme) {
+		if (hostOnly) {
+			return [url.protocol + "//" + url.host + path, url.protocol + "//" + url.hostname + path, url.protocol + "//" + url.host + pathNoSlash, url.protocol + "//" + url.hostname + pathNoSlash];
+		}
+		return [url.protocol + "//" + url.host + path + (includeQuery ? url.search + url.hash : ""), url.protocol + "//" + url.hostname + path + (includeQuery ? url.search + url.hash : ""), url.protocol + "//" + url.host + pathNoSlash + (includeQuery ? url.search + url.hash : ""), url.protocol + "//" + url.hostname + pathNoSlash + (includeQuery ? url.search + url.hash : "")];
+	}
+	if (hostOnly) {
+		return [url.host, url.hostname, url.host + path, url.hostname + path, url.host + pathNoSlash, url.hostname + pathNoSlash];
+	}
+	return [url.host + path + (includeQuery ? url.search + url.hash : ""), url.hostname + path + (includeQuery ? url.search + url.hash : ""), url.host + pathNoSlash + (includeQuery ? url.search + url.hash : ""), url.hostname + pathNoSlash + (includeQuery ? url.search + url.hash : "")];
+}
+
+function exclusionPatternMatches(pattern, rawURL) {
+	if (!pattern || !rawURL) {
+		return false;
+	}
+	pattern = String(pattern).trim();
+	if (!pattern) {
+		return false;
+	}
+	var hasScheme = /^[a-z][a-z0-9+.-]*:\/\//i.test(pattern);
+	var comparePattern = hasScheme ? pattern.replace(/^[a-z][a-z0-9+.-]*:\/\//i, "") : pattern;
+	var hostOnly = comparePattern.indexOf("/") === -1 && comparePattern.indexOf("?") === -1 && comparePattern.indexOf("#") === -1;
+	var source = escapeExclusionRegex(pattern.replace(/\/+$/, ""));
+	if (hostOnly) {
+		source += "(?:/.*)?";
+	}
+	var regex;
+	try {
+		regex = new RegExp("^" + source + "$", "i");
+	} catch (e) {
+		console.warn("[GestureUp] Invalid exclusion pattern:", pattern, e);
+		return false;
+	}
+	return getExclusionTargets(rawURL, pattern).some(function(target) {
+		return regex.test(target);
+	});
 }
 
 // Cache i18n strings early when extension context is still valid
@@ -430,7 +518,9 @@ var sue={
 		fix_linux_value:false,
 		fix_linux_timer:null,
 		os:"win",
-		drginbox:true
+		drginbox:true,
+		handleAttached:false,
+		exclusionDisabled:false
 	},
 	apps:{
 		enable:false,
@@ -459,12 +549,17 @@ var sue={
 		// Backup config to localStorage for future fallback use
 		backupConfigToLocal();
 
-		if (config.general.exclusion?.exclusion && sue.exclusionMatch(config.general.exclusion.exclusiontype)) {
-			console.log("[GestureUp] Config not loaded properly, skipping initialization");
+		sue.cons.exclusionDisabled = !!(config.general.exclusion?.exclusion && sue.exclusionMatch(config.general.exclusion.exclusiontype));
+		if (sue.cons.exclusionDisabled) {
+			console.log("[GestureUp] Disabled by exclusion rule");
+			sue.destroyHandle();
+			sue.drawing ? sue.clearUI() : null;
 			return;
 		}
 
-		sue.initHandle();
+		if (!sue.cons.handleAttached) {
+			sue.initHandle();
+		}
 		sue.uistyle={};
 		sue.uistyle.mges=[];
 		var _uimges=["direct","tip","note"];
@@ -477,6 +572,9 @@ var sue={
 		}
 	},
 	initHandle:function(){
+		if (sue.cons.handleAttached) {
+			return;
+		}
 		if(config.general.fnswitch.fntouch){
 			document.addEventListener("touchstart",this.handleEvent,false);
 			document.addEventListener("touchmove",this.handleEvent,false);
@@ -508,6 +606,29 @@ var sue={
 		if(config.general.fnswitch.fndca){
 			window.addEventListener("dblclick",this.handleEvent,false);
 		}
+		sue.cons.handleAttached = true;
+	},
+	destroyHandle:function(){
+		document.removeEventListener("touchstart",this.handleEvent,false);
+		document.removeEventListener("touchmove",this.handleEvent,false);
+		document.removeEventListener("touchend",this.handleEvent,false);
+		document.removeEventListener("mousedown",this.handleEvent,false);
+		document.removeEventListener("mouseup",this.handleEvent,false);
+		document.removeEventListener("mousemove",this.handleEvent,false);
+		document.removeEventListener("mouseover",this.handleEvent,false);
+		document.removeEventListener("contextmenu",this.handleEvent,false);
+		document.removeEventListener("click",this.handleEvent,false);
+		window.removeEventListener("dragstart",this.handleEvent,false);
+		window.removeEventListener("drag",this.handleEvent,false);
+		window.removeEventListener("dragover",this.handleEvent,false);
+		window.removeEventListener("dragend",this.handleEvent,false);
+		window.removeEventListener("keydown",this.handleEvent,false);
+		window.removeEventListener("wheel",this.handleEvent,false);
+		window.removeEventListener("dblclick",this.handleEvent,false);
+		sue.cons.handleAttached = false;
+		sue.inRges = false;
+		sue.inWges = false;
+		sue.inDrg = false;
 	},
 	initHandle2:function(){
 		sue.document.addEventListener("mousemove",this.handleEvent,false);
@@ -516,7 +637,7 @@ var sue={
 	},
 	handleEvent:function(e){
 		// Don't handle events if extension context is invalid
-		if (!extensionContextValid) {
+		if (!extensionContextValid || sue.cons.exclusionDisabled) {
 			return;
 		}
 		
@@ -839,11 +960,10 @@ var sue={
 		}
 	},
 	exclusionMatch:(type)=>{
-		const patterns = config.general.exclusion[type];
-		const url = `${window.location.host}${window.location.pathname.replace(/\/$/, "")}`;
-		const regexes = patterns.map(pattern => new RegExp('^' + pattern.replace(/\*/g, '.*') + '$'));
-		console.log("[GestureUp] regexes", regexes);
-		const exclusion= regexes.some(regex => regex.test(url));
+		const exclusionConf = config.general.exclusion || {};
+		const patterns = Array.isArray(exclusionConf[type]) ? exclusionConf[type] : [];
+		const url = getTopLevelExclusionURL();
+		const exclusion = patterns.some(pattern => exclusionPatternMatches(pattern, url));
 		return type === "black" ? exclusion : !exclusion;
 	},
 	ksa:{
@@ -1625,5 +1745,12 @@ chrome.runtime.onMessage.addListener(function(message,sender,sendResponse) {
 		console.warn("[GestureUp] Error in message listener:", error.message);
 	}
 });
+if (chrome.storage && chrome.storage.onChanged) {
+	chrome.storage.onChanged.addListener(function(changes, area) {
+		if ((area === "sync" || area === "local") && (changes.config || changes.general || changes.sync)) {
+			scheduleConfigReload();
+		}
+	});
+}
 // Initialize configuration loading with complete error handling and retry mechanism
 loadConfigWithRetry();

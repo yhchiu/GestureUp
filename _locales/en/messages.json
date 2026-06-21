@@ -1828,7 +1828,19 @@
     "message":"Manage match URLs"
   },
   "des_exclusion_match":{
-    "message":"The match pattern allows \"*\" wildcards."
+    "message":"Enter a domain or URL pattern. Domains match all paths; use * as a wildcard. Rules are rechecked in open tabs after saving."
+  },
+  "des_exclusion_examples":{
+    "message":"Examples: example.com, *.example.com, example.com/app/*, https://example.com/app?mode=*"
+  },
+  "des_exclusion_apply":{
+    "message":"Top-level page URL is used for frames, so blacklisted apps also disable GestureUp inside embedded frames."
+  },
+  "placeholder_exclusion_match":{
+    "message":"example.com or *.example.com"
+  },
+  "title_exclusion_match":{
+    "message":"Domains match all paths; full URLs can include path, query, hash, and * wildcards."
   },
   "btn_add":{
     "message":"ADD"

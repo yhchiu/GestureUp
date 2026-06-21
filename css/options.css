@@ -2211,11 +2211,22 @@ smartup.su_apps{
 	transition: background .4s ease-in-out;
 }
 /*////////////*/
+.exclusion_inputrow{
+	display: flex;
+	max-width: 360px;
+	gap: 8px;
+	align-items: center;
+}
+.exclusion_inputrow .exclusion_input{
+	flex: 1;
+	min-width: 0;
+}
 .exclusionwrap{
 	list-style-type: none;
 	padding: 16px 0;
 	margin-top: 16px;
-	max-width: 290px;
+	max-width: 360px;
+	min-height: 18px;
 	border-radius: 2px;
 	/*border: 1px solid #fff0;*/
 	background-color: #00000008;
@@ -2261,4 +2272,17 @@ smartup.su_apps{
 	background-color: red;
 	color: #fff;
 	cursor: pointer;
+}
+.exclusion_examples{
+	max-width: 360px;
+	margin-top: 8px;
+	padding: 8px 10px;
+	border-radius: 2px;
+	background: rgba(255,255,255,.4);
+	font-size: 12px;
+	line-height: 1.6;
+	color: #4b5563;
+}
+.exclusion_apply_note{
+	margin-top: 8px;
 }

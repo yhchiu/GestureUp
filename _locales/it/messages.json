@@ -1409,6 +1409,51 @@
   "ext_allver":{
     "message":"All versions:"
   },
+  "exclusion":{
+    "message":"Exclusion"
+  },
+  "stnm_exclusiontype":{
+    "message":"Exclusion Type"
+  },
+  "exclusion_enable":{
+    "message":"Enable exclusion feature"
+  },
+  "exclusion_black":{
+    "message":"Blacklist mode"
+  },
+  "exclusion_white":{
+    "message":"Whitelist mode"
+  },
+  "des_black":{
+    "message":"GestureUp will stop working in listed URLs."
+  },
+  "des_white":{
+    "message":"GestureUp will ONLY works in listed URLs."
+  },
+  "stnm_exclusion_match":{
+    "message":"Manage match URLs"
+  },
+  "des_exclusion_match":{
+    "message":"Enter a domain or URL pattern. Domains match all paths; use * as a wildcard. Rules are rechecked in open tabs after saving."
+  },
+  "des_exclusion_examples":{
+    "message":"Examples: example.com, *.example.com, example.com/app/*, https://example.com/app?mode=*"
+  },
+  "des_exclusion_apply":{
+    "message":"Top-level page URL is used for frames, so blacklisted apps also disable GestureUp inside embedded frames."
+  },
+  "placeholder_exclusion_match":{
+    "message":"example.com or *.example.com"
+  },
+  "title_exclusion_match":{
+    "message":"Domains match all paths; full URLs can include path, query, hash, and * wildcards."
+  },
+  "btn_add":{
+    "message":"ADD"
+  },
+  "tip_exclusion_repeat":{
+    "message":"The match URL repeated."
+  },
   "extension_updated":{
     "message":"Estensione GestureUp Aggiornata"
   },

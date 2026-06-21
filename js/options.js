@@ -103,6 +103,15 @@ var suo={
 		if (!config.general.exclusion){
 			config.general.exclusion=defaultConf.general.exclusion;
 		}
+		if (!Array.isArray(config.general.exclusion.black)){
+			config.general.exclusion.black=[];
+		}
+		if (!Array.isArray(config.general.exclusion.white)){
+			config.general.exclusion.white=[];
+		}
+		if (!config.general.exclusion.exclusiontype){
+			config.general.exclusion.exclusiontype="black";
+		}
 	},
 	init:function(){
 		console.log("begin");
@@ -134,6 +143,11 @@ var suo={
 		switch(e.type){
 			case"keydown":
 				console.log(e.target);
+				if(e.target.classList.contains("exclusion_input")&&e.key=="Enter"){
+					var btn=e.target.parentNode.querySelector(".exclusion_add");
+					btn?suo.exclusionAdd({target:btn}):null;
+					break;
+				}
 				suo.itemEditDca(e);
 
 				//key edit ksa
@@ -626,6 +640,11 @@ var suo={
 		}
 	},
 	initExclusion:()=>{
+		var _inputs=document.querySelectorAll(".exclusion_input");
+		for(var i=0;i<_inputs.length;i++){
+			_inputs[i].placeholder=suo.getI18n("placeholder_exclusion_match");
+			_inputs[i].title=suo.getI18n("title_exclusion_match");
+		}
 		var _doms=document.querySelectorAll(".set>.setcontent>ul.exclusionwrap");
 		for(var i=0;i<_doms.length;i++){
 			_doms[i].innerText="";
@@ -645,6 +664,22 @@ var suo={
 			document.querySelector("#exclusion_black").style.cssText+="display:none;";
 		}
 	},
+	normalizeExclusionPattern:value=>{
+		var pattern=(value||"").trim();
+		if(!pattern){return "";}
+		if(/^[a-z][a-z0-9+.-]*:\/\//i.test(pattern)){
+			try{
+				var url=new URL(pattern);
+				if(url.pathname=="/"&&!url.search&&!url.hash){
+					return url.origin;
+				}
+				return url.href;
+			}catch(e){
+				return pattern;
+			}
+		}
+		return pattern.replace(/\/+$/,"");
+	},
 	exclusionDel:e=>{
 		var _dom=e.target.parentNode;
 		var _id=_dom.dataset.id;
@@ -656,11 +691,12 @@ var suo={
 	exclusionAdd:e=>{
 		var _conf=config.general.exclusion[e.target.dataset.confele];
 		var _dom=e.target.parentNode.querySelector("input[type=text]");
-		if(_dom.value){
-			if(_conf.contains(_dom.value)){
+		var _value=suo.normalizeExclusionPattern(_dom.value);
+		if(_value){
+			if(_conf.some(item=>item.toLowerCase()==_value.toLowerCase())){
 				suo.showMsgBox(suo.getI18n("tip_exclusion_repeat"),"error",5)
 			}else{
-				_conf.push(_dom.value);
+				_conf.push(_value);
 				_dom.value="";
 				suo.saveConf();
 				suo.initExclusion();
