@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 320" role="img" aria-labelledby="title desc">
+  <title id="title">GestureUp monochrome brand mark</title>
+  <desc id="desc">Monochrome GestureUp wordmark with gesture path icon.</desc>
+  <rect x="44" y="44" width="232" height="232" rx="52" fill="#0f172a"/>
+  <path d="M207 98c-30-20-79-17-110 12-37 34-39 93-5 130 33 35 89 39 126 8 24-20 36-51 29-80h-64"
+        fill="none"
+        stroke="#f8fafc"
+        stroke-width="24"
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
+  <path d="M183 168 230 122"
+        fill="none"
+        stroke="#f8fafc"
+        stroke-width="24"
+        stroke-linecap="round"/>
+  <path d="M220 86 254 172 219 151 201 186 181 176 199 141 163 134Z"
+        fill="#f8fafc"/>
+  <path d="M220 86 254 172 219 151 201 186 181 176 199 141 163 134Z"
+        fill="none"
+        stroke="#0f172a"
+        stroke-width="7"
+        stroke-linejoin="round"/>
+  <circle cx="73" cy="198" r="6" fill="#f8fafc"/>
+  <circle cx="59" cy="218" r="5" fill="#f8fafc" opacity=".72"/>
+  <circle cx="83" cy="229" r="4" fill="#f8fafc" opacity=".78"/>
+
+  <text x="332" y="198"
+        fill="#0f172a"
+        font-family="Inter, Segoe UI, Roboto, Helvetica, Arial, sans-serif"
+        font-size="96"
+        font-weight="760"
+        letter-spacing="-1">GestureUp</text>
+</svg>

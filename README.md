@@ -1,5 +1,7 @@
 # GestureUp 
 
+![GestureUp brand mark](design/brand/gestureup-brand-mark.svg)
+
 > Forked from the original [SmartUp Gestures](https://github.com/zimocode/smartup) by zimocode; updated to Manifest V3, with bug fixes and ongoing updates.
 
 A customizable web browser mouse gestures extension with a variety of actions. Features include: mouse gestures, simple drag, super drag, rocker gestures, wheel gestures,Popup Actions, Icon Actions, Context Menu actions, Touch Gestures, Double Click Action and Keyboard Shortcut Actions.

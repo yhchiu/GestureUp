@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">GestureUp icon</title>
+  <desc id="desc">A gesture path forming a subtle G with an upward cursor arrow endpoint.</desc>
+  <defs>
+    <linearGradient id="bg" x1="88" y1="60" x2="424" y2="452" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#111827"/>
+      <stop offset="1" stop-color="#075985"/>
+    </linearGradient>
+    <linearGradient id="gesture" x1="118" y1="124" x2="399" y2="390" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#7dd3fc"/>
+      <stop offset="0.56" stop-color="#22d3ee"/>
+      <stop offset="1" stop-color="#14b8a6"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <path d="M362 126c-52-35-137-29-191 20-65 59-68 161-8 225 56 60 153 67 218 14 42-34 62-87 50-138h-110"
+        fill="none"
+        stroke="#082f49"
+        stroke-width="66"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        opacity=".72"/>
+  <path d="M362 126c-52-35-137-29-191 20-65 59-68 161-8 225 56 60 153 67 218 14 42-34 62-87 50-138h-110"
+        fill="none"
+        stroke="url(#gesture)"
+        stroke-width="42"
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
+  <path d="M321 247 401 167"
+        fill="none"
+        stroke="#a7f3d0"
+        stroke-width="42"
+        stroke-linecap="round"/>
+  <path d="M384 104 443 252 383 215 352 276 317 259 348 198 286 186Z"
+        fill="#f8fafc"/>
+  <path d="M384 104 443 252 383 215 352 276 317 259 348 198 286 186Z"
+        fill="none"
+        stroke="#0f172a"
+        stroke-width="12"
+        stroke-linejoin="round"/>
+  <circle cx="129" cy="299" r="11" fill="#bae6fd" opacity=".9"/>
+  <circle cx="104" cy="333" r="8" fill="#7dd3fc" opacity=".72"/>
+  <circle cx="146" cy="352" r="7" fill="#5eead4" opacity=".78"/>
+</svg>

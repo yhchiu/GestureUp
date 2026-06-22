@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 760" role="img" aria-labelledby="title desc">
+  <title id="title">GestureUp brand preview</title>
+  <desc id="desc">Preview of the GestureUp icon and brand mark.</desc>
+  <defs>
+    <linearGradient id="bg" x1="88" y1="60" x2="424" y2="452" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#111827"/>
+      <stop offset="1" stop-color="#075985"/>
+    </linearGradient>
+    <linearGradient id="gesture" x1="118" y1="124" x2="399" y2="390" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#7dd3fc"/>
+      <stop offset="0.56" stop-color="#22d3ee"/>
+      <stop offset="1" stop-color="#14b8a6"/>
+    </linearGradient>
+    <style>
+      .label { fill: #64748b; font-family: Inter, Segoe UI, Roboto, Helvetica, Arial, sans-serif; font-size: 22px; font-weight: 650; }
+      .word { fill: #0f172a; font-family: Inter, Segoe UI, Roboto, Helvetica, Arial, sans-serif; font-size: 96px; font-weight: 760; letter-spacing: -1px; }
+      .up { fill: #0284c7; font-family: Inter, Segoe UI, Roboto, Helvetica, Arial, sans-serif; font-size: 96px; font-weight: 820; letter-spacing: -1px; }
+    </style>
+    <symbol id="exportIcon" viewBox="0 0 512 512">
+      <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+      <path d="M362 126c-52-35-137-29-191 20-65 59-68 161-8 225 56 60 153 67 218 14 42-34 62-87 50-138h-110"
+            fill="none" stroke="#082f49" stroke-width="66" stroke-linecap="round" stroke-linejoin="round" opacity=".72"/>
+      <path d="M362 126c-52-35-137-29-191 20-65 59-68 161-8 225 56 60 153 67 218 14 42-34 62-87 50-138h-110"
+            fill="none" stroke="url(#gesture)" stroke-width="42" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M321 247 401 167" fill="none" stroke="#a7f3d0" stroke-width="42" stroke-linecap="round"/>
+      <path d="M384 104 443 252 383 215 352 276 317 259 348 198 286 186Z" fill="#f8fafc"/>
+      <path d="M384 104 443 252 383 215 352 276 317 259 348 198 286 186Z" fill="none" stroke="#0f172a" stroke-width="12" stroke-linejoin="round"/>
+      <circle cx="129" cy="299" r="11" fill="#bae6fd" opacity=".9"/>
+      <circle cx="104" cy="333" r="8" fill="#7dd3fc" opacity=".72"/>
+      <circle cx="146" cy="352" r="7" fill="#5eead4" opacity=".78"/>
+    </symbol>
+  </defs>
+
+  <rect width="1280" height="760" fill="#f8fafc"/>
+  <text x="72" y="76" fill="#0f172a" font-family="Inter, Segoe UI, Roboto, Helvetica, Arial, sans-serif" font-size="32" font-weight="760">GestureUp brand direction A</text>
+  <text x="72" y="112" fill="#64748b" font-family="Inter, Segoe UI, Roboto, Helvetica, Arial, sans-serif" font-size="18">Subtle G gesture path + upward cursor endpoint</text>
+
+  <g transform="translate(92 176)">
+    <text class="label" x="0" y="-28">App icon</text>
+    <rect width="256" height="256" rx="56" fill="url(#bg)"/>
+    <path d="M181 63c-26-18-69-15-96 10-33 30-34 81-4 113 28 30 77 34 109 7 21-17 31-44 25-69h-55"
+          fill="none" stroke="#082f49" stroke-width="33" stroke-linecap="round" stroke-linejoin="round" opacity=".72"/>
+    <path d="M181 63c-26-18-69-15-96 10-33 30-34 81-4 113 28 30 77 34 109 7 21-17 31-44 25-69h-55"
+          fill="none" stroke="url(#gesture)" stroke-width="21" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M160 124 201 84" fill="none" stroke="#a7f3d0" stroke-width="21" stroke-linecap="round"/>
+    <path d="M192 52 222 126 192 108 176 139 158 130 174 100 142 94Z" fill="#f8fafc"/>
+    <path d="M192 52 222 126 192 108 176 139 158 130 174 100 142 94Z" fill="none" stroke="#0f172a" stroke-width="6" stroke-linejoin="round"/>
+    <circle cx="65" cy="149" r="6" fill="#bae6fd" opacity=".9"/>
+    <circle cx="52" cy="166" r="4" fill="#7dd3fc" opacity=".72"/>
+    <circle cx="73" cy="176" r="4" fill="#5eead4" opacity=".78"/>
+  </g>
+
+  <g transform="translate(456 214)">
+    <text class="label" x="0" y="-66">Brand mark</text>
+    <svg x="0" y="-20" width="176" height="176" viewBox="0 0 512 512">
+      <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+      <path d="M362 126c-52-35-137-29-191 20-65 59-68 161-8 225 56 60 153 67 218 14 42-34 62-87 50-138h-110" fill="none" stroke="#082f49" stroke-width="66" stroke-linecap="round" stroke-linejoin="round" opacity=".72"/>
+      <path d="M362 126c-52-35-137-29-191 20-65 59-68 161-8 225 56 60 153 67 218 14 42-34 62-87 50-138h-110" fill="none" stroke="url(#gesture)" stroke-width="42" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M321 247 401 167" fill="none" stroke="#a7f3d0" stroke-width="42" stroke-linecap="round"/>
+      <path d="M384 104 443 252 383 215 352 276 317 259 348 198 286 186Z" fill="#f8fafc"/>
+      <path d="M384 104 443 252 383 215 352 276 317 259 348 198 286 186Z" fill="none" stroke="#0f172a" stroke-width="12" stroke-linejoin="round"/>
+      <circle cx="129" cy="299" r="11" fill="#bae6fd" opacity=".9"/>
+      <circle cx="104" cy="333" r="8" fill="#7dd3fc" opacity=".72"/>
+      <circle cx="146" cy="352" r="7" fill="#5eead4" opacity=".78"/>
+    </svg>
+    <text class="word" x="222" y="91"><tspan>Gesture</tspan><tspan fill="#0284c7" font-weight="820">Up</tspan></text>
+  </g>
+
+  <g transform="translate(92 548)">
+    <text class="label" x="0" y="-28">Small-size check</text>
+    <g transform="translate(0 0) scale(.125)">
+      <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+      <path d="M362 126c-52-35-137-29-191 20-65 59-68 161-8 225 56 60 153 67 218 14 42-34 62-87 50-138h-110" fill="none" stroke="#082f49" stroke-width="66" stroke-linecap="round" stroke-linejoin="round" opacity=".72"/>
+      <path d="M362 126c-52-35-137-29-191 20-65 59-68 161-8 225 56 60 153 67 218 14 42-34 62-87 50-138h-110" fill="none" stroke="url(#gesture)" stroke-width="42" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M321 247 401 167" fill="none" stroke="#a7f3d0" stroke-width="42" stroke-linecap="round"/>
+      <path d="M384 104 443 252 383 215 352 276 317 259 348 198 286 186Z" fill="#f8fafc"/>
+      <path d="M384 104 443 252 383 215 352 276 317 259 348 198 286 186Z" fill="none" stroke="#0f172a" stroke-width="12" stroke-linejoin="round"/>
+      <circle cx="129" cy="299" r="11" fill="#bae6fd" opacity=".9"/>
+      <circle cx="104" cy="333" r="8" fill="#7dd3fc" opacity=".72"/>
+      <circle cx="146" cy="352" r="7" fill="#5eead4" opacity=".78"/>
+    </g>
+    <g transform="translate(96 8) scale(.09375)">
+      <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+      <path d="M362 126c-52-35-137-29-191 20-65 59-68 161-8 225 56 60 153 67 218 14 42-34 62-87 50-138h-110" fill="none" stroke="#082f49" stroke-width="66" stroke-linecap="round" stroke-linejoin="round" opacity=".72"/>
+      <path d="M362 126c-52-35-137-29-191 20-65 59-68 161-8 225 56 60 153 67 218 14 42-34 62-87 50-138h-110" fill="none" stroke="url(#gesture)" stroke-width="42" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M321 247 401 167" fill="none" stroke="#a7f3d0" stroke-width="42" stroke-linecap="round"/>
+      <path d="M384 104 443 252 383 215 352 276 317 259 348 198 286 186Z" fill="#f8fafc"/>
+      <path d="M384 104 443 252 383 215 352 276 317 259 348 198 286 186Z" fill="none" stroke="#0f172a" stroke-width="12" stroke-linejoin="round"/>
+      <circle cx="129" cy="299" r="11" fill="#bae6fd" opacity=".9"/>
+      <circle cx="104" cy="333" r="8" fill="#7dd3fc" opacity=".72"/>
+      <circle cx="146" cy="352" r="7" fill="#5eead4" opacity=".78"/>
+    </g>
+    <g transform="translate(176 16) scale(.0625)">
+      <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+      <path d="M362 126c-52-35-137-29-191 20-65 59-68 161-8 225 56 60 153 67 218 14 42-34 62-87 50-138h-110" fill="none" stroke="#082f49" stroke-width="66" stroke-linecap="round" stroke-linejoin="round" opacity=".72"/>
+      <path d="M362 126c-52-35-137-29-191 20-65 59-68 161-8 225 56 60 153 67 218 14 42-34 62-87 50-138h-110" fill="none" stroke="url(#gesture)" stroke-width="42" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M321 247 401 167" fill="none" stroke="#a7f3d0" stroke-width="42" stroke-linecap="round"/>
+      <path d="M384 104 443 252 383 215 352 276 317 259 348 198 286 186Z" fill="#f8fafc"/>
+      <path d="M384 104 443 252 383 215 352 276 317 259 348 198 286 186Z" fill="none" stroke="#0f172a" stroke-width="12" stroke-linejoin="round"/>
+      <circle cx="129" cy="299" r="11" fill="#bae6fd" opacity=".9"/>
+      <circle cx="104" cy="333" r="8" fill="#7dd3fc" opacity=".72"/>
+      <circle cx="146" cy="352" r="7" fill="#5eead4" opacity=".78"/>
+    </g>
+    <g transform="translate(240 24) scale(.03125)">
+      <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+      <path d="M362 126c-52-35-137-29-191 20-65 59-68 161-8 225 56 60 153 67 218 14 42-34 62-87 50-138h-110" fill="none" stroke="#082f49" stroke-width="66" stroke-linecap="round" stroke-linejoin="round" opacity=".72"/>
+      <path d="M362 126c-52-35-137-29-191 20-65 59-68 161-8 225 56 60 153 67 218 14 42-34 62-87 50-138h-110" fill="none" stroke="url(#gesture)" stroke-width="42" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M321 247 401 167" fill="none" stroke="#a7f3d0" stroke-width="42" stroke-linecap="round"/>
+      <path d="M384 104 443 252 383 215 352 276 317 259 348 198 286 186Z" fill="#f8fafc"/>
+      <path d="M384 104 443 252 383 215 352 276 317 259 348 198 286 186Z" fill="none" stroke="#0f172a" stroke-width="12" stroke-linejoin="round"/>
+      <circle cx="129" cy="299" r="11" fill="#bae6fd" opacity=".9"/>
+      <circle cx="104" cy="333" r="8" fill="#7dd3fc" opacity=".72"/>
+      <circle cx="146" cy="352" r="7" fill="#5eead4" opacity=".78"/>
+    </g>
+    <text x="0" y="96" fill="#64748b" font-family="Inter, Segoe UI, Roboto, Helvetica, Arial, sans-serif" font-size="16">64 / 48 / 32 / 16 px exported icon read</text>
+  </g>
+</svg>
