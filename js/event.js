@@ -39,6 +39,7 @@ if(browserType!="cr"){
 // Global flag to track extension context validity
 var extensionContextValid = true;
 var extensionContextNotificationShown = false;
+var topLevelExclusionURL = "";
 
 // Complete configuration loading solution
 function loadConfigWithRetry() {
@@ -65,6 +66,7 @@ function loadConfigWithRetry() {
 		if (response && response.config && response.config.general) {
 			// Success: config loaded properly
 			config = response.config;
+			topLevelExclusionURL = response.tabURL || "";
 			devMode = response.devMode;
 			sue.cons.os = response.os;
 			configLoadState.retryCount = 0;
@@ -240,13 +242,51 @@ function scheduleConfigReload() {
 		return;
 	}
 	window.clearTimeout(configLoadState.reloadTimer);
+	var delay = 150 + Math.floor(Math.random() * 500); // 150–649ms jitter to desync reload bursts across many tabs/frames
 	configLoadState.reloadTimer = window.setTimeout(function() {
 		configLoadState.isLoading = false;
 		loadConfigWithRetry();
-	}, 150);
+	}, delay);
+}
+
+// Only reload the content-script config when a section that affects listener
+// attachment or exclusion evaluation actually changes. Action/command mappings
+// are resolved in the background at gesture time, so they are intentionally not watched here.
+function watchedConfigChanged(changes) {
+	function slice(general, drg) {
+		general = general || {};
+		drg = drg || {};
+		return JSON.stringify([
+			general.fnswitch,
+			general.exclusion,
+			general.settings,
+			drg.settings ? drg.settings.clickcancel : undefined
+		]);
+	}
+	// local mode: whole config nested under the "config" key
+	if (changes.config) {
+		if (changes.config.newValue === undefined) {
+			return false; // removal half of clear()+set(); decide on the set() event instead
+		}
+		var oc = changes.config.oldValue || {};
+		var nc = changes.config.newValue || {};
+		return slice(oc.general, oc.drg) !== slice(nc.general, nc.drg);
+	}
+	// sync mode: config top-level keys are flattened into separate storage keys
+	if (changes.general || changes.drg) {
+		var og = changes.general ? changes.general.oldValue : undefined;
+		var ng = changes.general ? changes.general.newValue : undefined;
+		var od = changes.drg ? changes.drg.oldValue : undefined;
+		var nd = changes.drg ? changes.drg.newValue : undefined;
+		return slice(og, od) !== slice(ng, nd);
+	}
+	return false;
 }
 
 function getTopLevelExclusionURL() {
+	if (topLevelExclusionURL) {
+		return topLevelExclusionURL;
+	}
 	try {
 		if (window.top && window.top.location && window.top.location.href) {
 			return window.top.location.href;
@@ -520,6 +560,8 @@ var sue={
 		os:"win",
 		drginbox:true,
 		handleAttached:false,
+		handle2Attached:false,
+		handle2Document:null,
 		exclusionDisabled:false
 	},
 	apps:{
@@ -553,13 +595,11 @@ var sue={
 		if (sue.cons.exclusionDisabled) {
 			console.log("[GestureUp] Disabled by exclusion rule");
 			sue.destroyHandle();
-			sue.drawing ? sue.clearUI() : null;
 			return;
 		}
 
-		if (!sue.cons.handleAttached) {
-			sue.initHandle();
-		}
+		sue.destroyHandle();
+		sue.initHandle();
 		sue.uistyle={};
 		sue.uistyle.mges=[];
 		var _uimges=["direct","tip","note"];
@@ -572,9 +612,6 @@ var sue={
 		}
 	},
 	initHandle:function(){
-		if (sue.cons.handleAttached) {
-			return;
-		}
 		if(config.general.fnswitch.fntouch){
 			document.addEventListener("touchstart",this.handleEvent,false);
 			document.addEventListener("touchmove",this.handleEvent,false);
@@ -609,6 +646,9 @@ var sue={
 		sue.cons.handleAttached = true;
 	},
 	destroyHandle:function(){
+		if(sue.drawing && sue.clearUI){
+			sue.clearUI();
+		}
 		document.removeEventListener("touchstart",this.handleEvent,false);
 		document.removeEventListener("touchmove",this.handleEvent,false);
 		document.removeEventListener("touchend",this.handleEvent,false);
@@ -625,15 +665,43 @@ var sue={
 		window.removeEventListener("keydown",this.handleEvent,false);
 		window.removeEventListener("wheel",this.handleEvent,false);
 		window.removeEventListener("dblclick",this.handleEvent,false);
+		if(sue.cons.handle2Document){
+			sue.cons.handle2Document.removeEventListener("mousemove",this.handleEvent,false);
+			sue.cons.handle2Document.removeEventListener("mouseover",this.handleEvent,false);
+			sue.cons.handle2Document.removeEventListener("contextmenu",this.handleEvent,false);
+		}
 		sue.cons.handleAttached = false;
+		sue.cons.handle2Attached = false;
+		sue.cons.handle2Document = null;
+		if(sue.timeout){
+			window.clearTimeout(sue.timeout);
+			sue.timeout=null;
+		}
+		sue.drawing = false;
+		sue.break = false;
+		sue.timeout_nomenu = false;
+		sue._dirArray = "";
 		sue.inRges = false;
 		sue.inWges = false;
 		sue.inDrg = false;
 	},
 	initHandle2:function(){
+		if(!sue.document){
+			return;
+		}
+		if(sue.cons.handle2Attached && sue.cons.handle2Document===sue.document){
+			return;
+		}
+		if(sue.cons.handle2Document){
+			sue.cons.handle2Document.removeEventListener("mousemove",this.handleEvent,false);
+			sue.cons.handle2Document.removeEventListener("mouseover",this.handleEvent,false);
+			sue.cons.handle2Document.removeEventListener("contextmenu",this.handleEvent,false);
+		}
 		sue.document.addEventListener("mousemove",this.handleEvent,false);
 		sue.document.addEventListener("mouseover",this.handleEvent,false);
 		sue.document.addEventListener("contextmenu",this.handleEvent,false);
+		sue.cons.handle2Document=sue.document;
+		sue.cons.handle2Attached=true;
 	},
 	handleEvent:function(e){
 		// Don't handle events if extension context is invalid
@@ -1747,7 +1815,11 @@ chrome.runtime.onMessage.addListener(function(message,sender,sendResponse) {
 });
 if (chrome.storage && chrome.storage.onChanged) {
 	chrome.storage.onChanged.addListener(function(changes, area) {
-		if ((area === "sync" || area === "local") && (changes.config || changes.general || changes.sync)) {
+		if (area !== "sync" && area !== "local") {
+			return;
+		}
+		var syncToggled = changes.sync && changes.sync.oldValue !== changes.sync.newValue;
+		if (syncToggled || watchedConfigChanged(changes)) {
 			scheduleConfigReload();
 		}
 	});

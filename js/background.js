@@ -5318,6 +5318,7 @@ var sub = {
           os: sub.cons.os,
           donateData: sub.cons.donateData,
           reason: sub.cons.reason,
+          tabURL: message.type === "evt_getconf" && sender && sender.tab ? sender.tab.url : "",
         };
         message.type === "opt_getconf" ? (sub.cons.reason = "update") : null;
         sendResponse(_conf);
