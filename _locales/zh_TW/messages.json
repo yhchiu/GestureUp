@@ -1434,7 +1434,7 @@
     "message":"管理符合網址"
   },
   "des_exclusion_match":{
-    "message":"輸入網域或 URL pattern。網域會符合所有路徑；可使用 * 作為萬用字元。儲存後，已開啟分頁會重新檢查規則。"
+    "message":"輸入網域或網址樣式。example.com 只比對該主機本身及其所有路徑，不含子網域；子網域（如 www.）請用 *.example.com，要同時涵蓋主網域與子網域則兩者都加。未填協定時 http 與 https 皆比對；填了協定（https://example.com）則只比對該協定。可使用 * 作為萬用字元。儲存後，已開啟分頁會重新檢查規則。"
   },
   "des_exclusion_examples":{
     "message":"範例：example.com、*.example.com、example.com/app/*、https://example.com/app?mode=*"
@@ -1446,7 +1446,7 @@
     "message":"example.com 或 *.example.com"
   },
   "title_exclusion_match":{
-    "message":"網域會符合所有路徑；完整 URL 可包含 path、query、hash 與 * 萬用字元。"
+    "message":"example.com＝該主機本身與其路徑（不含子網域）；*.example.com＝子網域；含協定（https://）只比對該協定，未填協定則 http/https 皆比對。"
   },
   "btn_add":{
     "message":"新增"

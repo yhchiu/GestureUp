@@ -1434,7 +1434,7 @@
     "message":"Manage match URLs"
   },
   "des_exclusion_match":{
-    "message":"Enter a domain or URL pattern. Domains match all paths; use * as a wildcard. Rules are rechecked in open tabs after saving."
+    "message":"Enter a domain or URL pattern. example.com matches that exact host and all its paths, but not its subdomains - use *.example.com for www. and other subdomains (add both to cover the domain and its subdomains). Without a scheme it matches both http and https; with one (https://example.com) only that scheme matches. * is a wildcard. Rules are rechecked in open tabs after saving."
   },
   "des_exclusion_examples":{
     "message":"Examples: example.com, *.example.com, example.com/app/*, https://example.com/app?mode=*"
@@ -1446,7 +1446,7 @@
     "message":"example.com or *.example.com"
   },
   "title_exclusion_match":{
-    "message":"Domains match all paths; full URLs can include path, query, hash, and * wildcards."
+    "message":"example.com = that exact host and its paths (not subdomains); *.example.com = subdomains. With a scheme (https://) only that scheme matches, without it both http and https."
   },
   "btn_add":{
     "message":"ADD"

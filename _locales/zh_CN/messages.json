@@ -1803,7 +1803,7 @@
    "message":"管理匹配网址"
   },
   "des_exclusion_match":{
-   "message":"输入域名或 URL pattern。域名会匹配所有路径；可使用 * 作为通配符。保存后，已打开的标签页会重新检查规则。"
+   "message":"输入域名或网址样式。example.com 仅匹配该主机本身及其所有路径，不含子域名；子域名（如 www.）请用 *.example.com，要同时涵盖主域名与子域名则两者都加。未填协议时 http 与 https 都匹配；填了协议（https://example.com）则只匹配该协议。可使用 * 作为通配符。保存后，已打开的标签页会重新检查规则。"
   },
   "des_exclusion_examples":{
    "message":"示例：example.com、*.example.com、example.com/app/*、https://example.com/app?mode=*"
@@ -1815,7 +1815,7 @@
    "message":"example.com 或 *.example.com"
   },
   "title_exclusion_match":{
-   "message":"域名会匹配所有路径；完整 URL 可包含 path、query、hash 与 * 通配符。"
+   "message":"example.com＝该主机本身及其路径（不含子域名）；*.example.com＝子域名；含协议（https://）只匹配该协议，未填协议则 http/https 都匹配。"
   },
   "btn_add":{
    "message":"添加"
