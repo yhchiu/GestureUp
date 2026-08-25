@@ -1660,17 +1660,75 @@ var sub = {
     // 	}
     // }
   },
+  // MV3 scripting.executeScript/insertCSS require target + func|files.
+  // The old tabs.executeScript {code, file, runAt} shape has never been
+  // valid here and throws "Unexpected property: 'code'".
+  injectFiles: function (tabId, files, callback) {
+    chrome.scripting.executeScript(
+      {
+        target: { tabId: tabId },
+        files: Array.isArray(files) ? files : [files],
+      },
+      callback || function () {}
+    );
+  },
+  injectFunc: function (tabId, func, args, callback) {
+    var injection = {
+      target: { tabId: tabId },
+      func: func,
+    };
+    if (args) {
+      injection.args = args;
+    }
+    chrome.scripting.executeScript(injection, callback || function () {});
+  },
+  injectCSS: function (tabId, files, callback) {
+    chrome.scripting.insertCSS(
+      {
+        target: { tabId: tabId },
+        files: Array.isArray(files) ? files : [files],
+      },
+      callback || function () {}
+    );
+  },
+  actionTabId: function (sender) {
+    if (sender && sender.tab && sender.tab.id != null) {
+      return sender.tab.id;
+    }
+    if (sub.curTab && sub.curTab.id != null) {
+      return sub.curTab.id;
+    }
+    return null;
+  },
   insertTest: function (appname) {
-    //console.log("appname")
-    //chrome.tabs.sendMessage(curTab.id,{type:"apptype",apptype:appname},function(response){});
-    chrome.scripting.executeScript({
-      code:
-        'chrome.runtime.sendMessage({type:"apps_test",apptype:"' +
-        appname +
-        '",value:sue.apps.enable,appjs:appType["' +
-        appname +
-        '"]},function(response){console.log(response)})',
-      runAt: "document_start",
+    var run = function (tabId) {
+      // Runs in the isolated world, where event.js defined sue / appType.
+      sub.injectFunc(
+        tabId,
+        function (name) {
+          chrome.runtime.sendMessage(
+            {
+              type: "apps_test",
+              apptype: name,
+              value: sue.apps.enable,
+              appjs: appType[name],
+            },
+            function (response) {
+              console.log(response);
+            }
+          );
+        },
+        [appname]
+      );
+    };
+    if (sub.curTab && sub.curTab.id != null) {
+      run(sub.curTab.id);
+      return;
+    }
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+      if (tabs && tabs[0]) {
+        run(tabs[0].id);
+      }
     });
   },
   checkPermission: function (thepers, theorgs, theFunction, msg) {
@@ -5338,103 +5396,81 @@ var sub = {
         sub.action.apps_saveconf(message, sendResponse);
         break;
       case "apps_test":
+        let tabId = sub.actionTabId(sender);
+        if (tabId == null) {
+          sendResponse({ value: false });
+          break;
+        }
         let _fun = function () {
           if (message.appjs) {
-            chrome.scripting.executeScript({
-              code: "sue.apps['" + message.apptype + "'].initUI();",
-              runAt: "document_start",
-            });
+            sub.injectFunc(
+              tabId,
+              function (apptype) {
+                sue.apps[apptype].initUI();
+              },
+              [message.apptype]
+            );
             return;
           }
+          let afterDeps = function () {
+            let arraySort = ["homepage", "appslist", "jslist", "extmgm"];
+            if (arraySort.contains(message.apptype)) {
+              sub.injectFiles(tabId, "js/sortable.js", function () {
+                sub.injectCSS(
+                  tabId,
+                  "css/inject/" + message.apptype + ".css"
+                );
+                sub.injectFiles(
+                  tabId,
+                  "js/inject/" + message.apptype + ".js",
+                  function () {
+                    if (message.apptype == "homepage" && message.ctm) {
+                      sub.injectFunc(
+                        tabId,
+                        function (apptype) {
+                          sue.apps[apptype].itemCTM();
+                        },
+                        [message.apptype]
+                      );
+                    }
+                  }
+                );
+              });
+              return;
+            }
+            sub.injectCSS(tabId, "css/inject/" + message.apptype + ".css");
+            sub.injectFiles(tabId, "js/inject/" + message.apptype + ".js");
+          };
           if (message.apptype == "base64") {
-            chrome.scripting.executeScript(
-              { file: "js/base64.js", runAt: "document_start" },
-              function () {}
-            );
-          } else if (
+            sub.injectFiles(tabId, "js/base64.js", afterDeps);
+            return;
+          }
+          if (
             message.apptype == "qr" ||
             message.apptype == "magnet" ||
             message.apptype == "shorturl"
           ) {
-            chrome.scripting.executeScript(
-              { file: "js/qrcode.js", runAt: "document_start" },
-              function () {}
-            );
-          } else if (message.apptype == "tbkjx") {
-            chrome.scripting.executeScript(
-              { file: "js/purify.js", runAt: "document_start" },
-              function () {}
-            );
-            chrome.scripting.executeScript(
-              { file: "js/qrcode.js", runAt: "document_start" },
-              function () {}
-            );
-          } else if (message.apptype == "notepad") {
-            chrome.scripting.executeScript({
-              file: "js/md5.js",
-              runAt: "document_start",
-            });
+            sub.injectFiles(tabId, "js/qrcode.js", afterDeps);
+            return;
           }
-
-          // insert sortable.js
-          let arraySort = ["homepage", "appslist", "jslist", "extmgm"];
-          if (arraySort.contains(message.apptype)) {
-            chrome.scripting.executeScript(
-              { file: "js/sortable.js", runAt: "document_start" },
-              function () {
-                chrome.tabs.insertCSS(
-                  {
-                    file: "css/inject/" + message.apptype + ".css",
-                    runAt: "document_start",
-                  },
-                  function () {}
-                );
-                chrome.scripting.executeScript(
-                  {
-                    file: "js/inject/" + message.apptype + ".js",
-                    runAt: "document_start",
-                  },
-                  function () {
-                    //after insert js, run sue.apps.homepage.itemCTM() for miniapps-homepage
-                    if (message.apptype == "homepage" && message.ctm) {
-                      chrome.scripting.executeScript({
-                        code: "sue.apps['" + message.apptype + "'].itemCTM();",
-                        runAt: "document_start",
-                      });
-                    }
-                  }
-                );
-              }
+          if (message.apptype == "tbkjx") {
+            sub.injectFiles(
+              tabId,
+              ["js/purify.js", "js/qrcode.js"],
+              afterDeps
             );
             return;
           }
-
-          chrome.tabs.insertCSS(
-            {
-              file: "css/inject/" + message.apptype + ".css",
-              runAt: "document_start",
-            },
-            function () {}
-          );
-          chrome.scripting.executeScript(
-            {
-              file: "js/inject/" + message.apptype + ".js",
-              runAt: "document_start",
-            },
-            function () {}
-          );
+          if (message.apptype == "notepad") {
+            sub.injectFiles(tabId, "js/md5.js", afterDeps);
+            return;
+          }
+          afterDeps();
         };
         if (!message.value) {
-          chrome.tabs.insertCSS(
-            { file: "css/apps_basic.css", runAt: "document_start" },
-            function () {}
-          );
-          chrome.scripting.executeScript(
-            { file: "js/apps_basic.js", runAt: "document_start" },
-            function () {
-              _fun();
-            }
-          );
+          sub.injectCSS(tabId, "css/apps_basic.css", function () {
+            sub.injectFiles(tabId, "js/apps_basic.js", _fun);
+          });
         } else {
           _fun();
         }
