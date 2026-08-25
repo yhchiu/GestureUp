@@ -1,4 +1,5 @@
 console.log("pxmovie");
+appType["pxmovie"]=true;
 sue.apps.pxmovie={
 	cons:{},
 	initUI:function(){

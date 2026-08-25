@@ -1,4 +1,5 @@
 console.log("qr")
+appType["qr"]=true;
 sue.apps.qr={
 	cons:{
 		boxmove:{}

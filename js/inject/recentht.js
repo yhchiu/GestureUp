@@ -1,4 +1,5 @@
 console.log("recentht");
+appType["recentht"]=true;
 sue.apps.recentht={
 	cons:{},
 	initUI:function(){

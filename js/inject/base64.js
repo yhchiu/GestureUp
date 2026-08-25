@@ -1,4 +1,5 @@
 console.log("base64")
+appType["base64"]=true;
 sue.apps.base64={
 	cons:{
 		boxmove:{}

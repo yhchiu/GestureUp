@@ -1,4 +1,5 @@
 console.log("recentclosed");
+appType["recentclosed"]=true;
 sue.apps.recentclosed={
 	cons:{
 		recentclosed:null

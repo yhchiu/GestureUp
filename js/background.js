@@ -5467,15 +5467,26 @@ var sub = {
           sendResponse({ value: false });
           break;
         }
-        let _fun = function () {
-          if (message.appjs) {
+        let appFile = "js/inject/" + message.apptype + ".js";
+        let afterApp = function () {
+          if (message.apptype == "homepage" && message.ctm) {
             sub.injectFunc(
               tabId,
               function (apptype) {
-                sue.apps[apptype].initUI();
+                sue.apps[apptype].itemCTM();
               },
               [message.apptype]
             );
+          }
+        };
+        let _fun = function () {
+          // message.appjs is appType[apptype], which each app file sets when it
+          // runs. If it is set, this tab already has the app's CSS and its
+          // libraries (qrcode.js, md5.js, sortable.js), so only the app file
+          // itself is injected again — re-running it is what refreshes the
+          // values the gesture carries, such as the selected text or link.
+          if (message.appjs) {
+            sub.injectFiles(tabId, appFile, afterApp);
             return;
           }
           let afterDeps = function () {
@@ -5486,26 +5497,12 @@ var sub = {
                   tabId,
                   "css/inject/" + message.apptype + ".css"
                 );
-                sub.injectFiles(
-                  tabId,
-                  "js/inject/" + message.apptype + ".js",
-                  function () {
-                    if (message.apptype == "homepage" && message.ctm) {
-                      sub.injectFunc(
-                        tabId,
-                        function (apptype) {
-                          sue.apps[apptype].itemCTM();
-                        },
-                        [message.apptype]
-                      );
-                    }
-                  }
-                );
+                sub.injectFiles(tabId, appFile, afterApp);
               });
               return;
             }
             sub.injectCSS(tabId, "css/inject/" + message.apptype + ".css");
-            sub.injectFiles(tabId, "js/inject/" + message.apptype + ".js");
+            sub.injectFiles(tabId, appFile);
           };
           if (message.apptype == "base64") {
             sub.injectFiles(tabId, "js/base64.js", afterDeps);

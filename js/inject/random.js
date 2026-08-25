@@ -1,4 +1,5 @@
 console.log("random")
+appType["random"]=true;
 sue.apps.random={
 	cons:{
 		boxmove:{}

@@ -1,4 +1,5 @@
 console.log("convertcase");
+appType["convertcase"]=true;
 sue.apps.convertcase={
 	cons:{},
 	initUI:function(){

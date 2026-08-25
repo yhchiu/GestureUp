@@ -1,3 +1,4 @@
+appType["shorturl"]=true;
 sue.apps.shorturl={
 	cons:{},
 	initUI:function(){

@@ -1,4 +1,5 @@
 console.log("speaker")
+appType["speaker"]=true;
 sue.apps.speaker={
 	cons:{},
 	initUI:function(){

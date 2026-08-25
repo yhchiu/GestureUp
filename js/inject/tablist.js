@@ -1,4 +1,5 @@
 console.log("tablist")
+appType["tablist"]=true;
 sue.apps.tablist={
 	cons:{},
 	initUI:function(){

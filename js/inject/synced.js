@@ -1,4 +1,5 @@
 console.log("synced");
+appType["synced"]=true;
 sue.apps.synced={
 	cons:{},
 	initUI:function(){

@@ -1,4 +1,5 @@
 // console.log("homepage");
+appType["homepage"]=true;
 sue.apps.homepage={
 	cons:{},
 	initUI:function(){

@@ -1,4 +1,5 @@
 //console.log("recentbk");
+appType["recentbk"]=true;
 sue.apps.recentbk={
 	cons:{},
 	initUI:function(){

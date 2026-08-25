@@ -1,4 +1,5 @@
 //console.log("appslist");
+appType["appslist"]=true;
 sue.apps.appslist={
 	cons:{},
 	initUI:function(){

@@ -1,4 +1,5 @@
 console.log("savepdf")
+appType["savepdf"]=true;
 sue.apps.savepdf={
 	cons:{
 		boxmove:{}

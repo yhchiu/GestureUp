@@ -1,4 +1,5 @@
 console.log("magnet");
+appType["magnet"]=true;
 sue.apps.magnet={
 	initUI:function(){
 		let appInfo={

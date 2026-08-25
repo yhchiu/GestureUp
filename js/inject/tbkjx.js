@@ -1,4 +1,5 @@
 console.log("tbkjx");
+appType["tbkjx"]=true;
 sue.apps.tbkjx={
 	cons:{
 		platform:0

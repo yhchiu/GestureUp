@@ -1,4 +1,5 @@
 console.log("autoreload");
+appType["autoreload"]=true;
 sue.apps.autoreload={
 	cons:{},
 	initUI:function(){

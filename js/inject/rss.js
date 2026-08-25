@@ -1,4 +1,5 @@
 console.log("rss")
+appType["rss"]=true;
 sue.apps.rss={
 	cons:{},
 	initUI:function(){

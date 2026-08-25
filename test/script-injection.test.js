@@ -420,6 +420,41 @@ test("insertTest('qr') asks the page whether the QR app is loaded", () => {
     "injected function must send the apps_test message that loads the QR UI"
   );
   assert.match(serialized, /apptype/);
+  assert.match(
+    serialized,
+    /appjs:\s*appType\[name\]/,
+    "the page must report whether the app is already loaded, so apps_test can " +
+      "skip re-injecting its libraries"
+  );
+});
+
+test("every injected app marks itself loaded", () => {
+  const dir = path.join(__dirname, "..", "js", "inject");
+  const missing = [];
+  let apps = 0;
+  for (const file of fs.readdirSync(dir).filter((f) => f.endsWith(".js"))) {
+    const name = path.basename(file, ".js");
+    const src = fs.readFileSync(path.join(dir, file), "utf8");
+    // Action scripts (zoom, scroll, np, copyimg) define no app object.
+    const definesApp =
+      src.includes("sue.apps." + name + "=") ||
+      src.includes("sue.apps[appName]=");
+    if (!definesApp) continue;
+    apps++;
+    const marksLoaded =
+      src.includes('appType["' + name + '"]=true') ||
+      src.includes("appType[appName]=true");
+    if (!marksLoaded) missing.push("js/inject/" + file);
+  }
+
+  assert.ok(apps > 20, "expected to have scanned every app, saw " + apps);
+  assert.deepEqual(
+    missing,
+    [],
+    "these apps never set appType, so background.js cannot tell they are " +
+      "already loaded and re-injects their libraries on every gesture:\n" +
+      missing.join("\n")
+  );
 });
 
 test("insertTest falls back to a live tab query when curTab is unset", () => {

@@ -1,4 +1,5 @@
 console.log("extmgm")
+appType["extmgm"]=true;
 sue.apps.extmgm={
 	cons:{
 		boxmove:{},

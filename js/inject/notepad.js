@@ -1,4 +1,5 @@
 //console.log("notepad");
+appType["notepad"]=true;
 sue.apps.notepad={
 	cons:{},
 	initUI:function(){
