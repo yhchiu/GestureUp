@@ -8,6 +8,7 @@ const assert = require("node:assert/strict");
 const BACKGROUND_PATH = path.join(__dirname, "..", "js", "background.js");
 const backgroundSrc = fs.readFileSync(BACKGROUND_PATH, "utf8");
 
+
 // MV3 scripting.ScriptInjection keys. Anything else is rejected with
 // "Unexpected property: '<name>'" — the error reported for the QR action.
 // The deprecated "function" spelling is deliberately absent: Chrome renamed it
@@ -190,6 +191,19 @@ function extractMethod(src, blanked, name) {
   const params = src.slice(paren, matchingBracket(blanked, paren) + 1);
   return name + ": function " + params + " " + src.slice(at.brace, at.end);
 }
+
+// Source of the single callback passed to e.g. chrome.tabs.onRemoved.
+function extractListener(src, blanked, api) {
+  const marker = api + ".addListener(";
+  const at = blanked.indexOf(marker);
+  if (at === -1) throw new Error("listener not found: " + api);
+  if (blanked.indexOf(marker, at + 1) !== -1) {
+    throw new Error("more than one listener on " + api);
+  }
+  const paren = at + marker.length - 1;
+  return src.slice(paren + 1, matchingBracket(blanked, paren));
+}
+
 
 function loadInjectionSub(overrides) {
   const executeScriptCalls = [];
@@ -554,6 +568,71 @@ test("a failed injection is reported and stops the chain", () => {
     ran,
     false,
     "the next injection must not run on top of a dependency that failed"
+  );
+});
+
+test("openApp refreshes the current tab before running the action", () => {
+  const sub = { cons: {}, curTab: { id: 99 }, curWin: { id: 1 }, action: {} };
+  const chrome = {
+    windows: {
+      getCurrent: function (query, callback) {
+        callback({ id: 2, tabs: [{ id: 7 }] });
+      },
+    },
+    tabs: {
+      query: function (query, callback) {
+        callback([{ id: 7, active: true }]);
+      },
+    },
+  };
+  // Evaluated here, not through a helper, so the free `sub` these two close
+  // over resolves to the mock above.
+  const blanked = blankComments(backgroundSrc);
+  Object.assign(
+    sub,
+    eval("({" + extractMethod(backgroundSrc, blanked, "refreshCurrent") + "})")
+  );
+  const openApp = eval(
+    "({" + extractMethod(backgroundSrc, blanked, "openApp") + "})"
+  ).openApp;
+
+  let sawTabId = null;
+  sub.action.qr = function () {
+    sawTabId = sub.curTab.id;
+  };
+
+  const previousChrome = global.chrome;
+  global.chrome = chrome;
+  try {
+    openApp({ value: "qr" });
+  } finally {
+    global.chrome = previousChrome;
+  }
+
+  assert.equal(
+    sawTabId,
+    7,
+    "the action must see the tab that is current now, not the one cached by " +
+      "the last gesture"
+  );
+  assert.deepEqual(sub.curWin, { id: 2, tabs: [{ id: 7 }] });
+});
+
+test("closing the current tab drops the cached snapshot", () => {
+  const blanked = blankComments(backgroundSrc);
+  const sub = { cons: {}, curTab: { id: 42 } };
+  const onRemoved = eval(
+    "(" + extractListener(backgroundSrc, blanked, "chrome.tabs.onRemoved") + ")"
+  );
+
+  onRemoved(7, { windowId: 1, isWindowClosing: false });
+  assert.deepEqual(sub.curTab, { id: 42 }, "another tab closing changes nothing");
+
+  onRemoved(42, { windowId: 1, isWindowClosing: false });
+  assert.equal(
+    sub.curTab,
+    null,
+    "the snapshot must go, so callers query for a live tab instead"
   );
 });
 

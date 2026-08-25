@@ -1872,16 +1872,23 @@ var sub = {
     sub.theConf = theConf;
     return sub.theConf;
   },
-  initCurrent: function (sender, theConf) {
-    //sender?sub.extID=sender.id:null;
+  // sub.curTab and sub.curWin are snapshots that actions read directly, so
+  // anything dispatching an action has to take a fresh pair first.
+  refreshCurrent: function (callback) {
     chrome.windows.getCurrent({ populate: true }, function (window) {
       sub.curWin = window;
       chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
         sub.curTab = tabs[0];
-        if (sub.action[sub.theConf.name]) {
-          sub.action[sub.theConf.name](sub.theConf);
-        }
+        callback();
       });
+    });
+  },
+  initCurrent: function (sender, theConf) {
+    //sender?sub.extID=sender.id:null;
+    sub.refreshCurrent(function () {
+      if (sub.action[sub.theConf.name]) {
+        sub.action[sub.theConf.name](sub.theConf);
+      }
     });
   },
   action: {
@@ -6050,7 +6057,12 @@ var sub = {
     },
     appslist: {
       openApp: function (message) {
-        sub.action[message.value]();
+        // Gestures reach an action through initCurrent, which refreshes
+        // curTab/curWin first. This path does not, so the action used to run
+        // against whatever tab was current the last time a gesture did.
+        sub.refreshCurrent(function () {
+          sub.action[message.value]();
+        });
       },
     },
     recentbk: {
@@ -6838,6 +6850,11 @@ chrome.tabs.onRemoved.addListener(function (tabId) {
   if (sub.cons.autoreload && sub.cons.autoreload[tabId]) {
     clearInterval(sub.cons.autoreload[tabId].timer);
     clearInterval(sub.cons.autoreload[tabId].countDown);
+  }
+  // Drop the snapshot when its tab goes away, so withActiveTabId falls back to
+  // a live query instead of injecting into a tab that no longer exists.
+  if (sub.curTab && sub.curTab.id === tabId) {
+    sub.curTab = null;
   }
   //(sub.cons.autoreload&&sub.cons.autoreload[tabId])?window.clearInterval(sub.cons.autoreload[tabId]):null;
 });
