@@ -8,6 +8,8 @@ const assert = require("node:assert/strict");
 const BACKGROUND_PATH = path.join(__dirname, "..", "js", "background.js");
 const backgroundSrc = fs.readFileSync(BACKGROUND_PATH, "utf8");
 
+const APPS_BASIC_PATH = path.join(__dirname, "..", "js", "apps_basic.js");
+const appsBasicSrc = fs.readFileSync(APPS_BASIC_PATH, "utf8");
 
 // MV3 scripting.ScriptInjection keys. Anything else is rejected with
 // "Unexpected property: '<name>'" — the error reported for the QR action.
@@ -204,6 +206,13 @@ function extractListener(src, blanked, api) {
   return src.slice(paren + 1, matchingBracket(blanked, paren));
 }
 
+function loadMethods(src, names, scope) {
+  const blanked = blankComments(src);
+  for (const name of names) {
+    Object.assign(scope, eval("({" + extractMethod(src, blanked, name) + "})"));
+  }
+  return scope;
+}
 
 function loadInjectionSub(overrides) {
   const executeScriptCalls = [];
@@ -634,6 +643,62 @@ test("closing the current tab drops the cached snapshot", () => {
     null,
     "the snapshot must go, so callers query for a live tab instead"
   );
+});
+
+test("reopening an app replaces its box instead of stacking a second one", () => {
+  const removed = [];
+  const existing = [
+    { dataset: { appname: "qr" }, remove: () => removed.push("qr-1") },
+    { dataset: { appname: "qr" }, remove: () => removed.push("qr-2") },
+  ];
+  const queries = [];
+  const document = {
+    createElement: function (tag) {
+      return {
+        tag: tag,
+        style: { cssText: "" },
+        dataset: {},
+        children: [],
+        appendChild: function (child) {
+          this.children.push(child);
+          return child;
+        },
+        setAttribute: function () {},
+      };
+    },
+    querySelectorAll: function (selector) {
+      queries.push(selector);
+      return existing;
+    },
+  };
+
+  const sue = { apps: {} };
+  loadMethods(appsBasicSrc, ["domCreate", "initBox"], sue.apps);
+
+  const previousDocument = global.document;
+  const previousSue = global.sue;
+  global.document = document;
+  global.sue = sue;
+  let box;
+  try {
+    box = sue.apps.initBox({ appName: "qr" });
+  } finally {
+    global.document = previousDocument;
+    global.sue = previousSue;
+  }
+
+  assert.deepEqual(
+    queries,
+    ["smartup.su_apps[data-appname='qr']"],
+    "initBox must look for a box this app already has open"
+  );
+  assert.deepEqual(
+    removed,
+    ["qr-1", "qr-2"],
+    "every box left over from a previous open must go, or they stack up"
+  );
+  assert.equal(box.tag, "smartup");
+  assert.equal(box.dataset.appname, "qr");
 });
 
 test("withActiveTabId warns when there is no tab to inject into", () => {

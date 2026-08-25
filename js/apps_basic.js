@@ -26,6 +26,12 @@ sue.apps={
 	initBox:function(boxInfo){
 		//{headTitle:"title",headCloseBtn:true,menu:[{src:"/image/options.svg",title:"app_tip_opt"}],options:[{type:"select",label:"label",name:"name",value:["value1","value2"]},{type:"checkbox",label:"label",name:"name",checked:true}]}
 		let domBox,domHead,domMain,domMenu,domOptions;
+		//one box per app. Every app gives its box the same id, so reopening one
+		//stacked a second copy on top of the first instead of replacing it.
+		let domOld=document.querySelectorAll("smartup.su_apps[data-appname='"+boxInfo.appName+"']");
+		for(var i=0;i<domOld.length;i++){
+			domOld[i].remove();
+		}
 		domBox=sue.apps.domCreate("smartup",{setName:["className"],setValue:["su_apps"]},null,"z-index:"+(parseInt((new Date().getTime())/1000)),{setName:["appname"],setValue:[boxInfo.appName]});
 		//head
 		domHead=sue.apps.domCreate("div",{setName:["className"],setValue:["su_head"]});
