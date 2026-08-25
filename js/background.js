@@ -1381,22 +1381,19 @@ var sub = {
               });
               _obj.ctm = tab;
               sub.cons[_appname] = _obj;
-              chrome.scripting.executeScript({
-                target: { tabId: tab.id },
-                function: function () {
-                  chrome.runtime.sendMessage(
-                    {
-                      type: "apps_test",
-                      apptype: "homepage",
-                      value: enable, //此变量的值需根据上下文定义
-                      ctm: true,
-                      appjs: appType["homepage"],
-                    },
-                    function (response) {
-                      console.log(response);
-                    }
-                  );
-                },
+              sub.injectFunc(tab.id, function () {
+                chrome.runtime.sendMessage(
+                  {
+                    type: "apps_test",
+                    apptype: "homepage",
+                    value: enable, //此变量的值需根据上下文定义
+                    ctm: true,
+                    appjs: appType["homepage"],
+                  },
+                  function (response) {
+                    console.log(response);
+                  }
+                );
               });
             });
           };
@@ -1663,32 +1660,86 @@ var sub = {
   // MV3 scripting.executeScript/insertCSS require target + func|files.
   // The old tabs.executeScript {code, file, runAt} shape has never been
   // valid here and throws "Unexpected property: 'code'".
-  injectFiles: function (tabId, files, callback) {
+  //
+  // options (all optional): {allFrames: true} reaches every frame,
+  // {world: "MAIN"} injects into the page world instead of the isolated one.
+  // MV2's runAt:"document_start" maps to injectImmediately, which every
+  // caller in this file asked for.
+  injectTarget: function (tabId, options) {
+    var target = { tabId: tabId };
+    if (options && options.allFrames) {
+      target.allFrames = true;
+    }
+    return target;
+  },
+  // Injection failures (restricted page, tab closed mid-gesture) arrive
+  // through lastError, not as an exception. Log them so a gesture that does
+  // nothing is at least traceable, then run the caller's callback as before.
+  injectDone: function (what, callback) {
+    return function (result) {
+      if (chrome.runtime.lastError) {
+        console.warn("inject failed: " + what, chrome.runtime.lastError.message);
+      }
+      if (callback) {
+        callback(result);
+      }
+    };
+  },
+  injectFiles: function (tabId, files, callback, options) {
+    var list = Array.isArray(files) ? files : [files];
     chrome.scripting.executeScript(
       {
-        target: { tabId: tabId },
-        files: Array.isArray(files) ? files : [files],
+        target: sub.injectTarget(tabId, options),
+        files: list,
+        injectImmediately: true,
       },
-      callback || function () {}
+      sub.injectDone(list.join(", "), callback)
     );
   },
-  injectFunc: function (tabId, func, args, callback) {
+  injectFunc: function (tabId, func, args, callback, options) {
     var injection = {
-      target: { tabId: tabId },
+      target: sub.injectTarget(tabId, options),
       func: func,
+      injectImmediately: true,
     };
     if (args) {
       injection.args = args;
     }
-    chrome.scripting.executeScript(injection, callback || function () {});
+    if (options && options.world) {
+      injection.world = options.world;
+    }
+    chrome.scripting.executeScript(injection, sub.injectDone("func", callback));
   },
-  injectCSS: function (tabId, files, callback) {
+  injectCSS: function (tabId, files, callback, options) {
+    var list = Array.isArray(files) ? files : [files];
     chrome.scripting.insertCSS(
       {
-        target: { tabId: tabId },
-        files: Array.isArray(files) ? files : [files],
+        target: sub.injectTarget(tabId, options),
+        files: list,
       },
-      callback || function () {}
+      sub.injectDone(list.join(", "), callback)
+    );
+  },
+  // MV3 dropped string injection: executeScript takes func or files, never
+  // code. User scripts (options > script, and the jslist app) are arbitrary
+  // strings, so they go in as a <script> element in the page world. Note that
+  // is the page's world, not the isolated one MV2 used, and a page with a
+  // strict CSP refuses it.
+  injectCode: function (tabId, code, callback) {
+    if (!code) {
+      return;
+    }
+    sub.injectFunc(
+      tabId,
+      function (src) {
+        var el = document.createElement("script");
+        el.textContent = src;
+        (document.head || document.documentElement).appendChild(el);
+        el.remove();
+      },
+      [code],
+      callback,
+      { world: "MAIN" }
     );
   },
   actionTabId: function (sender) {
@@ -1700,8 +1751,25 @@ var sub = {
     }
     return null;
   },
+  // Every injection needs an explicit tabId in MV3. Gesture actions run right
+  // after initCurrent, so sub.curTab is the active tab; fall back to a live
+  // query for the message-driven paths that skip initCurrent.
+  withActiveTabId: function (callback) {
+    var tabId = sub.actionTabId(null);
+    if (tabId != null) {
+      callback(tabId);
+      return;
+    }
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+      if (tabs && tabs[0]) {
+        callback(tabs[0].id);
+        return;
+      }
+      console.warn("no active tab to inject into");
+    });
+  },
   insertTest: function (appname) {
-    var run = function (tabId) {
+    sub.withActiveTabId(function (tabId) {
       // Runs in the isolated world, where event.js defined sue / appType.
       sub.injectFunc(
         tabId,
@@ -1720,15 +1788,6 @@ var sub = {
         },
         [appname]
       );
-    };
-    if (sub.curTab && sub.curTab.id != null) {
-      run(sub.curTab.id);
-      return;
-    }
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-      if (tabs && tabs[0]) {
-        run(tabs[0].id);
-      }
     });
   },
   checkPermission: function (thepers, theorgs, theFunction, msg) {
@@ -1917,8 +1976,8 @@ var sub = {
       //fix edge
       if (!chrome.tabs.reload) {
         for (var i = 0; ids && i < ids.length; i++) {
-          chrome.scripting.executeScript(ids[i], {
-            code: "location.reload();",
+          sub.injectFunc(ids[i], function () {
+            location.reload();
           });
         }
       }
@@ -1930,11 +1989,9 @@ var sub = {
       //chk
       var ids = sub.getId(sub.getConfValue("selects", "n_tab"));
       for (var i = 0; ids && i < ids.length; i++) {
-        chrome.scripting.executeScript(
-          ids[i],
-          { code: "window.stop()", runAt: "document_start" },
-          function () {}
-        );
+        sub.injectFunc(ids[i], function () {
+          window.stop();
+        });
       }
     },
     next: function () {
@@ -1958,14 +2015,11 @@ var sub = {
           sub.getConfValue("texts", "n_npkey_n") ||
           sub.getConfValue("texts", "n_npkey_p")
         ).split(",");
-        chrome.scripting.executeScript(
-          { file: "js/namespace.js", runAt: "document_start", allFrames: true },
-          function () {}
-        );
-        chrome.scripting.executeScript(
-          { file: "js/inject/np.js", runAt: "document_start", allFrames: true },
-          function () {}
-        );
+        sub.withActiveTabId(function (tabId) {
+          sub.injectFiles(tabId, ["js/namespace.js", "js/inject/np.js"], null, {
+            allFrames: true,
+          });
+        });
       }
     },
     previous: function () {
@@ -3166,14 +3220,11 @@ var sub = {
       if (!sub.message.selEle.img) {
         return;
       }
-      chrome.scripting.executeScript(
-        {
-          file: "js/inject/copyimg.js",
-          runAt: "document_start",
+      sub.withActiveTabId(function (tabId) {
+        sub.injectFiles(tabId, "js/inject/copyimg.js", null, {
           allFrames: true,
-        },
-        function () {}
-      );
+        });
+      });
     },
     imgsearch: function () {
       if (!sub.message.selEle.img) {
@@ -3264,9 +3315,21 @@ var sub = {
       chrome.runtime.reload();
     },
     closeapps: function () {
-      let _code =
-        '(function(){let eles=document.querySelectorAll("smartup.su_apps");let _fun=function(ele){window.setTimeout(function(){ele.remove();},500)};for(var i=0;i<eles.length;i++){eles[i].style.cssText+="transition:all .4s ease-in-out;opacity:0;top:0;";_fun(eles[i]);};}())';
-      chrome.scripting.executeScript({ code: _code });
+      sub.withActiveTabId(function (tabId) {
+        sub.injectFunc(tabId, function () {
+          var eles = document.querySelectorAll("smartup.su_apps");
+          var _fun = function (ele) {
+            window.setTimeout(function () {
+              ele.remove();
+            }, 500);
+          };
+          for (var i = 0; i < eles.length; i++) {
+            eles[i].style.cssText +=
+              "transition:all .4s ease-in-out;opacity:0;top:0;";
+            _fun(eles[i]);
+          }
+        });
+      });
     },
     dldir: function () {
       var theFunction = function () {
@@ -3325,13 +3388,14 @@ var sub = {
     },
     script: function () {
       var _script = sub.getConfValue("selects", "n_script");
-      chrome.scripting.executeScript(
-        {
-          code: config.general.script.script[_script].content,
-          runAt: "document_start",
-        },
-        function () {}
-      );
+      var _entry = config.general.script.script[_script];
+      if (!_entry) {
+        console.warn("no user script at index " + _script);
+        return;
+      }
+      sub.withActiveTabId(function (tabId) {
+        sub.injectCode(tabId, _entry.content);
+      });
     },
     source: function () {
       var theTarget = sub.getConfValue("selects", "n_optype"),
@@ -3346,10 +3410,9 @@ var sub = {
     zoom: function () {
       if (!chrome.tabs.setZoom) {
         sub.cons.zoom = sub.getConfValue("selects", "n_zoom");
-        chrome.scripting.executeScript(
-          { file: "js/inject/zoom.js", runAt: "document_start" },
-          function () {}
-        );
+        sub.withActiveTabId(function (tabId) {
+          sub.injectFiles(tabId, "js/inject/zoom.js");
+        });
       } else {
         var factorDefault = 1;
         console.log(sub.getConfData("checks", "c_factor"));
@@ -3487,10 +3550,11 @@ var sub = {
       }
     },
     print: function () {
-      chrome.scripting.executeScript(
-        { code: "window.print()", runAt: "document_start" },
-        function () {}
-      );
+      sub.withActiveTabId(function (tabId) {
+        sub.injectFunc(tabId, function () {
+          window.print();
+        });
+      });
     },
 
     zoom_dep: function () {
@@ -3503,10 +3567,9 @@ var sub = {
           sub.cons.zoom = sub.theConf.selects[i].value;
         }
       }
-      chrome.scripting.executeScript(
-        { file: "js/inject/zoom.js", runAt: "document_start" },
-        function () {}
-      );
+      sub.withActiveTabId(function (tabId) {
+        sub.injectFiles(tabId, "js/inject/zoom.js");
+      });
     },
     mute: function () {
       var ids = [];
@@ -5975,9 +6038,13 @@ var sub = {
     },
     jslist: {
       jsRun: function (message) {
-        chrome.scripting.executeScript({
-          code: config.general.script.script[message.value].content,
-          runAt: "document_start",
+        let _entry = config.general.script.script[message.value];
+        if (!_entry) {
+          console.warn("no user script at index " + message.value);
+          return;
+        }
+        sub.withActiveTabId(function (tabId) {
+          sub.injectCode(tabId, _entry.content);
         });
       },
     },

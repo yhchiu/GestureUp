@@ -1,0 +1,9 @@
+{
+  "name": "gestureup",
+  "version": "10.5.3",
+  "private": true,
+  "description": "Node tests for the GestureUp extension. The extension itself is plain files loaded by the browser and has no build step or dependencies.",
+  "scripts": {
+    "test": "node --test \"test/*.test.js\""
+  }
+}
