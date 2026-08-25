@@ -451,6 +451,27 @@ test("insertTest('qr') asks the page whether the QR app is loaded", () => {
   );
 });
 
+test("every apps_test message reports state the page actually has", () => {
+  const blanked = blankComments(backgroundSrc);
+  const senders = blanked.split('type: "apps_test"').length - 1;
+
+  assert.ok(senders >= 2, "expected both apps_test senders, saw " + senders);
+  // These two are the only globals event.js and apps_basic.js define for the
+  // page to report. A bare `enable` used to be sent from the homepage context
+  // menu, which threw ReferenceError before the message was ever posted.
+  assert.equal(
+    blanked.split("value: sue.apps.enable").length - 1,
+    senders,
+    "every apps_test sender must read sue.apps.enable"
+  );
+  assert.equal(
+    blanked.split("appjs: appType[").length - 1,
+    senders,
+    "every apps_test sender must read appType, or apps_test cannot tell the " +
+      "app is already loaded and re-injects its libraries"
+  );
+});
+
 test("every injected app marks itself loaded", () => {
   const dir = path.join(__dirname, "..", "js", "inject");
   const missing = [];

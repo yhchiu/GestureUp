@@ -1386,7 +1386,9 @@ var sub = {
                   {
                     type: "apps_test",
                     apptype: "homepage",
-                    value: enable, //此变量的值需根据上下文定义
+                    // Same value insertTest reports: whether apps_basic.js has
+                    // already set up sue.apps in this tab.
+                    value: sue.apps.enable,
                     ctm: true,
                     appjs: appType["homepage"],
                   },
