@@ -174,7 +174,7 @@ function matchingBracket(src, openIndex) {
 // Returns the character span of `name: function (...) {...}` in the
 // comment-blanked source, so callers can slice either source with it.
 function locateMethod(blanked, name) {
-  const re = new RegExp("\\b" + name + "\\s*:\\s*function\\s*\\(");
+  const re = new RegExp("\\b" + name + "\\s*:\\s*(async\\s+)?function\\s*\\(");
   const m = re.exec(blanked);
   if (!m) throw new Error("method not found: " + name);
   if (re.test(blanked.slice(m.index + 1))) {
@@ -184,14 +184,20 @@ function locateMethod(blanked, name) {
   // Take the brace after the parameter list, not the first brace after "(",
   // so a destructured parameter is not mistaken for the body.
   const brace = blanked.indexOf("{", matchingBracket(blanked, paren));
-  return { start: m.index, end: matchingBracket(blanked, brace) + 1, brace };
+  return {
+    start: m.index,
+    end: matchingBracket(blanked, brace) + 1,
+    brace,
+    isAsync: Boolean(m[1]),
+  };
 }
 
 function extractMethod(src, blanked, name) {
   const at = locateMethod(blanked, name);
   const paren = blanked.indexOf("(", at.start);
   const params = src.slice(paren, matchingBracket(blanked, paren) + 1);
-  return name + ": function " + params + " " + src.slice(at.brace, at.end);
+  const prefix = at.isAsync ? "async function " : "function ";
+  return name + ": " + prefix + params + " " + src.slice(at.brace, at.end);
 }
 
 // Source of the single callback passed to e.g. chrome.tabs.onRemoved.
@@ -598,6 +604,89 @@ test("a failed injection is reported and stops the chain", () => {
     ran,
     false,
     "the next injection must not run on top of a dependency that failed"
+  );
+});
+
+test("every context menu item is created with an id", () => {
+  const blanked = blankComments(backgroundSrc);
+  const missing = [];
+  let created = 0;
+  const re = /chrome\.contextMenus\.create\s*\(/g;
+  let m;
+  while ((m = re.exec(blanked)) !== null) {
+    const argStart = m.index + m[0].length;
+    const firstArg = blanked.slice(argStart).search(/\S/) + argStart;
+    const props = blanked.slice(
+      firstArg,
+      matchingBracket(blanked, firstArg) + 1
+    );
+    created++;
+    if (!topLevelKeys(props).includes("id")) {
+      missing.push("js/background.js:" + lineOf(m.index));
+    }
+  }
+
+  assert.ok(created > 3, "expected several menu items, saw " + created);
+  assert.deepEqual(
+    missing,
+    [],
+    "a service worker must pass an id to contextMenus.create; without one " +
+      'Chrome refuses with "Extensions using event pages or Service Workers ' +
+      'must pass an id parameter":\n' + missing.join("\n")
+  );
+});
+
+test("a context menu click is dispatched from its id alone", async () => {
+  // No initCTM has run: this is the state the worker wakes up in when a click
+  // arrives after it was torn down, which is the normal case in MV3.
+  const config = {
+    ctm: { actions: [{ name: "newtab" }, { name: "closetab" }] },
+    general: { fnswitch: { fndrg: false, fnsdrg: true } },
+  };
+  const calls = [];
+  const sub = {
+    CTM_ACTION: "ctm_action_",
+    CTM_FN: "ctm_fn_",
+    action: {
+      extdisable: () => calls.push("extdisable"),
+      optionspage: () => calls.push("optionspage"),
+    },
+    initCurrent: async () => calls.push("initCurrent"),
+    saveConf: async () => calls.push("saveConf"),
+  };
+  const console = { log: () => {}, warn: (m) => calls.push("warn: " + m) };
+  const blanked = blankComments(backgroundSrc);
+  const CTMclick = eval(
+    "({" + extractMethod(backgroundSrc, blanked, "CTMclick") + "})"
+  ).CTMclick;
+
+  const previousConsole = global.console;
+  global.console = console;
+  try {
+    await CTMclick({ menuItemId: "ctm_action_1", linkUrl: "https://x.test" });
+    assert.equal(sub.theConf, config.ctm.actions[1]);
+    assert.equal(sub.message.selEle.lnk, "https://x.test");
+
+    await CTMclick({ menuItemId: "ctm_fn_drg", checked: true });
+    await CTMclick({ menuItemId: "ctm_disable" });
+    await CTMclick({ menuItemId: "ctm_opt" });
+    await CTMclick({ menuItemId: "ctm_action_9" });
+  } finally {
+    global.console = previousConsole;
+  }
+
+  assert.deepEqual(calls, [
+    "initCurrent",
+    "saveConf",
+    "extdisable",
+    "optionspage",
+    "warn: no context menu action for ctm_action_9",
+  ]);
+  assert.equal(config.general.fnswitch.fndrg, true);
+  assert.equal(
+    config.general.fnswitch.fnsdrg,
+    false,
+    "drag and select-drag are mutually exclusive"
   );
 });
 

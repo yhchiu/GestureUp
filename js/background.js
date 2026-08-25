@@ -1230,6 +1230,12 @@ var sub = {
       chrome.action.setTitle({ title: sub.getI18n("ext_name") });
     }
   },
+  // A service worker must pass an id to contextMenus.create, and it is torn
+  // down between building the menu and the click, so the id has to carry what
+  // the item does. CTMclick reads these back out of info.menuItemId; nothing
+  // about the menu is kept in memory.
+  CTM_ACTION: "ctm_action_",
+  CTM_FN: "ctm_fn_",
   initCTM: function () {
     chrome.contextMenus.removeAll(function () {
       // Check if config is properly initialized
@@ -1237,14 +1243,22 @@ var sub = {
         console.warn("Config not initialized in initCTM");
         return;
       }
-      
+
       if (!config.general.fnswitch.fnctm) {
         return;
       }
-      sub.ctm = { actions: [], fn: [], menuDisable: "", menuOpt: "" };
+      var separators = 0;
+      var addSeparator = function () {
+        separators++;
+        chrome.contextMenus.create(
+          { id: "ctm_sep_" + separators, contexts: ["all"], type: "separator" },
+          function () {}
+        );
+      };
       for (var i = 0; i < config.ctm.actions.length; i++) {
-        var menuId = chrome.contextMenus.create(
+        chrome.contextMenus.create(
           {
+            id: sub.CTM_ACTION + i,
             contexts: ["all"],
             title:
               config.ctm.actions[i].mydes && config.ctm.actions[i].mydes.type
@@ -1253,13 +1267,9 @@ var sub = {
           },
           function () {}
         );
-        sub.ctm.actions.push({ id: i, menuId: menuId });
       }
       if (config.ctm.settings.fnswitch) {
-        chrome.contextMenus.create(
-          { contexts: ["all"], type: "separator" },
-          function () {}
-        );
+        addSeparator();
         var fnArray = [
           "mges",
           "sdrg",
@@ -1271,8 +1281,9 @@ var sub = {
           "ctm",
         ];
         for (var i = 0; i < fnArray.length; i++) {
-          var menuId = chrome.contextMenus.create(
+          chrome.contextMenus.create(
             {
+              id: sub.CTM_FN + fnArray[i],
               contexts: ["all"],
               title: sub.getI18n(fnArray[i]),
               type: "checkbox",
@@ -1281,28 +1292,26 @@ var sub = {
             },
             function () {}
           );
-          sub.ctm.fn.push({ id: i, fnName: "fn" + fnArray[i], menuId: menuId });
         }
       }
       if (config.ctm.settings.homepage) {
+        addSeparator();
         chrome.contextMenus.create(
-          { contexts: ["all"], type: "separator" },
-          function () {}
-        );
-        sub.ctm.menuHomepage = chrome.contextMenus.create(
-          { contexts: ["all"], title: sub.getI18n("homepage_ctm") },
+          {
+            id: "ctm_homepage",
+            contexts: ["all"],
+            title: sub.getI18n("homepage_ctm"),
+          },
           function () {}
         );
       }
       if (config.ctm.settings.disable || config.ctm.settings.opt) {
-        chrome.contextMenus.create(
-          { contexts: ["all"], type: "separator" },
-          function () {}
-        );
+        addSeparator();
       }
       if (config.ctm.settings.disable) {
-        sub.ctm.menuDisable = chrome.contextMenus.create(
+        chrome.contextMenus.create(
           {
+            id: "ctm_disable",
             contexts: ["all"],
             title: sub.getI18n("ctm_disable"),
             type: "checkbox",
@@ -1311,8 +1320,12 @@ var sub = {
         );
       }
       if (config.ctm.settings.opt) {
-        sub.ctm.menuOpt = chrome.contextMenus.create(
-          { contexts: ["all"], title: sub.getI18n("ctm_opt") },
+        chrome.contextMenus.create(
+          {
+            id: "ctm_opt",
+            contexts: ["all"],
+            title: sub.getI18n("ctm_opt"),
+          },
           function () {}
         );
       }
@@ -1321,50 +1334,59 @@ var sub = {
   CTMclick: async function (info, tab) {
     console.log(info);
     console.log(tab);
-    for (var i = 0; i < sub.ctm.actions.length; i++) {
-      if (info.menuItemId == sub.ctm.actions[i].menuId) {
-        var theConf = config.ctm.actions[sub.ctm.actions[i].id];
-        sub.theConf = theConf;
-        var selObj = {
-          lnk: info.linkUrl || "",
-          txt: info.selectionText || "",
-          img: info.srcUrl || "",
-          str: "",
-        };
-        console.log(selObj);
-        sub.message = { type: "action_ctm", selEle: selObj };
-        await sub.initCurrent(null, sub.theConf);
-        break;
+    var menuItemId = String(info.menuItemId);
+    if (menuItemId.indexOf(sub.CTM_ACTION) == 0) {
+      var theConf =
+        config.ctm.actions[
+          parseInt(menuItemId.slice(sub.CTM_ACTION.length), 10)
+        ];
+      if (!theConf) {
+        console.warn("no context menu action for " + menuItemId);
+        return;
       }
+      sub.theConf = theConf;
+      var selObj = {
+        lnk: info.linkUrl || "",
+        txt: info.selectionText || "",
+        img: info.srcUrl || "",
+        str: "",
+      };
+      console.log(selObj);
+      sub.message = { type: "action_ctm", selEle: selObj };
+      await sub.initCurrent(null, sub.theConf);
+      return;
     }
-    for (var i = 0; i < sub.ctm.fn.length; i++) {
-      if (info.menuItemId == sub.ctm.fn[i].menuId) {
-        var fnName = sub.ctm.fn[i].fnName;
-        if (info.checked) {
-          config.general.fnswitch[fnName] = true;
-          if (fnName == "fndrg") {
-            config.general.fnswitch.fnsdrg = false;
-          }
-          if (fnName == "fnsdrg") {
-            config.general.fnswitch.fndrg = false;
-          }
-          if (fnName == "fnpop") {
-            config.general.fnswitch.fnicon = false;
-          }
-          if (fnName == "fnicon") {
-            config.general.fnswitch.fnpop = false;
-          }
-        } else {
-          config.general.fnswitch[fnName] = false;
+    if (menuItemId.indexOf(sub.CTM_FN) == 0) {
+      var fnName = "fn" + menuItemId.slice(sub.CTM_FN.length);
+      if (info.checked) {
+        config.general.fnswitch[fnName] = true;
+        if (fnName == "fndrg") {
+          config.general.fnswitch.fnsdrg = false;
         }
-        await sub.saveConf();
-        break;
+        if (fnName == "fnsdrg") {
+          config.general.fnswitch.fndrg = false;
+        }
+        if (fnName == "fnpop") {
+          config.general.fnswitch.fnicon = false;
+        }
+        if (fnName == "fnicon") {
+          config.general.fnswitch.fnpop = false;
+        }
+      } else {
+        config.general.fnswitch[fnName] = false;
       }
+      await sub.saveConf();
+      return;
     }
-    if (info.menuItemId == sub.ctm.menuOpt) {
+    if (menuItemId == "ctm_disable") {
+      sub.action.extdisable();
+      return;
+    }
+    if (menuItemId == "ctm_opt") {
       sub.action.optionspage();
+      return;
     }
-    if (info.menuItemId == sub.ctm.menuHomepage) {
+    if (menuItemId == "ctm_homepage") {
       chrome.tabs.query(
         { highlighted: true, currentWindow: true },
         async function (tabs) {
