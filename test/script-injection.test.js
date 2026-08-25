@@ -492,7 +492,7 @@ test("injectCode runs a user script through a page-world script element", () => 
   );
 });
 
-test("a failed injection is reported instead of passing silently", () => {
+test("a failed injection is reported and stops the chain", () => {
   const ctx = loadInjectionSub();
   const previousChrome = global.chrome;
   const previousConsole = global.console;
@@ -503,7 +503,7 @@ test("a failed injection is reported instead of passing silently", () => {
     ctx.chrome.runtime.lastError = {
       message: "Cannot access contents of the page.",
     };
-    ctx.sub.injectFiles(42, "js/inject/zoom.js", function () {
+    ctx.sub.injectFiles(42, "js/apps_basic.js", function () {
       ran = true;
     });
   } finally {
@@ -513,9 +513,13 @@ test("a failed injection is reported instead of passing silently", () => {
   }
 
   assert.equal(ctx.warnings.length, 1);
-  assert.match(ctx.warnings[0], /inject failed: js\/inject\/zoom\.js/);
+  assert.match(ctx.warnings[0], /inject failed: js\/apps_basic\.js/);
   assert.match(ctx.warnings[0], /Cannot access contents of the page\./);
-  assert.equal(ran, true, "the caller's callback still runs");
+  assert.equal(
+    ran,
+    false,
+    "the next injection must not run on top of a dependency that failed"
+  );
 });
 
 test("withActiveTabId warns when there is no tab to inject into", () => {

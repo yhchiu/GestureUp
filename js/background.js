@@ -1673,12 +1673,14 @@ var sub = {
     return target;
   },
   // Injection failures (restricted page, tab closed mid-gesture) arrive
-  // through lastError, not as an exception. Log them so a gesture that does
-  // nothing is at least traceable, then run the caller's callback as before.
+  // through lastError, not as an exception, and Chrome runs the callback
+  // anyway. Stop there: these callbacks chain one injection onto the next, so
+  // carrying on would load an app on top of a dependency that never arrived.
   injectDone: function (what, callback) {
     return function (result) {
       if (chrome.runtime.lastError) {
         console.warn("inject failed: " + what, chrome.runtime.lastError.message);
+        return;
       }
       if (callback) {
         callback(result);
@@ -5461,6 +5463,7 @@ var sub = {
       case "apps_test":
         let tabId = sub.actionTabId(sender);
         if (tabId == null) {
+          console.warn("apps_test: no tab to inject " + message.apptype);
           sendResponse({ value: false });
           break;
         }
