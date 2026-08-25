@@ -167,6 +167,9 @@ test("empty, missing, or invalid exclusion patterns match nothing and do not thr
   assert.equal(api.patternMatches("   ", "https://example.com"), false);
   assert.equal(api.patternMatches("example.com", ""), false);
   assert.equal(api.patternMatches("example.com", null), false);
+  // After glob-escape, user strings become a valid regex; the catch in
+  // exclusionPatternMatches is a fail-closed backstop, not a reachable case
+  // for ordinary catalog input. Garbage still must not throw.
   assert.doesNotThrow(() => {
     assert.equal(api.patternMatches("[unterminated", "https://example.com"), false);
   });
@@ -182,6 +185,26 @@ test("trailing slashes on a path pattern or on the URL still match", () => {
     api.patternMatches("example.com", "https://example.com/"),
     true
   );
+});
+
+test("a trailing slash on a host pattern does not match that host", () => {
+  // Named exception to spec story 29. hostOnly is decided before trailing
+  // slashes are stripped, so "example.com/" is not treated as host-only and
+  // does not match https://example.com. Production stays frozen; this locks
+  // today's miss instead of asserting the user-facing wish.
+  const { api } = loadExclusion();
+  assert.equal(
+    api.patternMatches("example.com/", "https://example.com"),
+    false
+  );
+});
+
+test("gestures turn off only when exclusion is enabled and the type matches", () => {
+  assert.match(
+    eventSrc,
+    /exclusionDisabled = !!\(config\.general\.exclusion\?\.exclusion && sue\.exclusionMatch\(config\.general\.exclusion\.exclusiontype\)\)/
+  );
+  assert.match(eventSrc, /if \(sue\.cons\.exclusionDisabled\) \{\s*[\s\S]*?sue\.destroyHandle\(\)/);
 });
 
 test("blacklist polarity disables on match; whitelist polarity enables only on match", () => {
@@ -220,6 +243,16 @@ test("blacklist polarity disables on match; whitelist polarity enables only on m
     api.exclusionMatch("white"),
     true,
     "whitelist miss means exclusionMatch is true (gestures disabled)"
+  );
+});
+
+test("tip and action messages use the nested getConf lookup", () => {
+  assert.match(backgroundSrc, /case "gettip":\s*sub\.theConf = getConf\(\)/);
+  assert.match(backgroundSrc, /case "action":\s*sub\.theConf = getConf\(\)/);
+  assert.equal(
+    backgroundSrc.includes("checkAction("),
+    false,
+    "checkAction is unused; do not wire messages back to config.mges.mges"
   );
 });
 

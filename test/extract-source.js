@@ -87,25 +87,6 @@ function extractMethod(src, blanked, name) {
   return name + ": " + prefix + params + " " + src.slice(at.brace, at.end);
 }
 
-function extractListener(src, blanked, api) {
-  const marker = api + ".addListener(";
-  const at = blanked.indexOf(marker);
-  if (at === -1) throw new Error("listener not found: " + api);
-  if (blanked.indexOf(marker, at + 1) !== -1) {
-    throw new Error("more than one listener on " + api);
-  }
-  const paren = at + marker.length - 1;
-  return src.slice(paren + 1, matchingBracket(blanked, paren));
-}
-
-function loadMethods(src, names, scope) {
-  const blanked = blankComments(src);
-  for (const name of names) {
-    Object.assign(scope, eval("({" + extractMethod(src, blanked, name) + "})"));
-  }
-  return scope;
-}
-
 function locateFunction(blanked, name) {
   const re = new RegExp("\\bfunction\\s+" + name + "\\s*\\(");
   const m = re.exec(blanked);
@@ -180,11 +161,7 @@ function objectLiteral(src, blanked, marker) {
 module.exports = {
   blankComments,
   matchingBracket,
-  locateMethod,
   extractMethod,
-  extractListener,
-  loadMethods,
-  locateFunction,
   extractFunction,
   extractAssignedFunction,
   extractArrowMethod,

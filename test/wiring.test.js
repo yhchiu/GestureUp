@@ -8,6 +8,7 @@ const {
   blankComments,
   matchingBracket,
   extractMethod,
+  objectLiteral,
 } = require("./extract-source.js");
 
 const ROOT = path.join(__dirname, "..");
@@ -37,15 +38,7 @@ const CATALOG_NAMES_WITHOUT_ENGLISH_KEY = new Set([
 ]);
 
 function loadActionsCatalog() {
-  const marker = "let actions=";
-  const at = actionsBlanked.indexOf(marker);
-  if (at === -1) throw new Error("actions object not found");
-  if (actionsBlanked.indexOf(marker, at + 1) !== -1) {
-    throw new Error("actions object declared more than once");
-  }
-  const brace = actionsBlanked.indexOf("{", at);
-  const end = matchingBracket(actionsBlanked, brace) + 1;
-  return eval("(" + actionsSrc.slice(brace, end) + ")");
+  return eval("(" + objectLiteral(actionsSrc, actionsBlanked, "let actions=") + ")");
 }
 
 function collectCatalogNames(catalog) {
@@ -84,6 +77,7 @@ function loadHandlerNames() {
   const re = /\n    ([A-Za-z_][A-Za-z0-9_]*): (?:async )?function/g;
   let m;
   while ((m = re.exec(block))) names.add(m[1]);
+  // A truncated slice of the action map would still look like handlers.
   if (names.size < 50) {
     throw new Error("expected a full action map, saw " + names.size);
   }
@@ -128,6 +122,7 @@ function collectDefaultActionNames(conf) {
         if (
           item &&
           typeof item.name === "string" &&
+          // Search engines and user scripts use `name` plus `content`.
           !Object.prototype.hasOwnProperty.call(item, "content")
         ) {
           names.add(item.name);
