@@ -158,6 +158,23 @@ function objectLiteral(src, blanked, marker) {
   return src.slice(brace, end);
 }
 
+// The call starting at `marker` through its matching ')'. Used for
+// module-level addListener registrations that have no other seam.
+function extractInvocation(src, blanked, marker) {
+  const at = blanked.indexOf(marker);
+  if (at === -1) throw new Error("invocation not found: " + marker);
+  if (blanked.indexOf(marker, at + 1) !== -1) {
+    throw new Error("invocation found more than once: " + marker);
+  }
+  const paren = blanked.indexOf("(", at);
+  if (paren === -1) throw new Error("invocation has no '(': " + marker);
+  const end = matchingBracket(blanked, paren) + 1;
+  return {
+    text: src.slice(at, end),
+    blanked: blanked.slice(at, end),
+  };
+}
+
 module.exports = {
   blankComments,
   matchingBracket,
@@ -166,4 +183,5 @@ module.exports = {
   extractAssignedFunction,
   extractArrowMethod,
   objectLiteral,
+  extractInvocation,
 };
